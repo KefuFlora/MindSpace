@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Notifications - MindSpace Moderator</title>
 
-    <link rel="stylesheet" href="../css/moderator.css">
+    <link
+        rel="stylesheet"
+        href="../css/moderator.css"
+    >
+
 </head>
 
 <body>
@@ -15,13 +25,19 @@
     <header class="dashboard-header">
 
         <div class="brand">
+
             <h1>MindSpace</h1>
-            <span>Moderator Portal</span>
+
+            <span>
+                Moderator Portal
+            </span>
+
         </div>
 
         <button
             class="logout-button"
-            onclick="window.location.href='login.html'">
+            onclick="window.location.href='login.html'"
+        >
             Logout
         </button>
 
@@ -34,7 +50,9 @@
         <!-- Page Heading -->
         <section class="welcome-section">
 
-            <h2>Notifications</h2>
+            <h2>
+                Notifications
+            </h2>
 
             <p>
                 View moderation alerts and important system
@@ -53,7 +71,9 @@
 
                 <div class="notification-header">
 
-                    <h3>New Flagged Post</h3>
+                    <h3>
+                        New Flagged Post
+                    </h3>
 
                     <span class="notification-status">
                         New
@@ -83,8 +103,9 @@
                 </div>
 
                 <a
-                    href="review.html"
-                    class="review-button">
+                    href="review.html?id=post001&type=post"
+                    class="review-button"
+                >
                     Review Content
                 </a>
 
@@ -96,7 +117,9 @@
 
                 <div class="notification-header">
 
-                    <h3>New Flagged Comment</h3>
+                    <h3>
+                        New Flagged Comment
+                    </h3>
 
                     <span class="notification-status">
                         New
@@ -106,7 +129,7 @@
 
                 <p>
                     A student comment has been reported and is
-                    waiting for moderation.
+                    waiting for moderator review.
                 </p>
 
                 <div class="notification-details">
@@ -116,7 +139,7 @@
                     </span>
 
                     <span>
-                        Reason: Harassment
+                        Reason: Inappropriate Language
                     </span>
 
                     <span>
@@ -126,8 +149,9 @@
                 </div>
 
                 <a
-                    href="review.html"
-                    class="review-button">
+                    href="review.html?id=comment001&type=comment"
+                    class="review-button"
+                >
                     Review Content
                 </a>
 
@@ -139,7 +163,9 @@
 
                 <div class="notification-header">
 
-                    <h3>Moderation Reminder</h3>
+                    <h3>
+                        Moderation Reminder
+                    </h3>
 
                     <span class="notification-status">
                         Information
@@ -165,9 +191,10 @@
                 </div>
 
                 <a
-                    href="flagged-posts.html"
-                    class="review-button">
-                    View Flagged Content
+                    href="flagged-post.html"
+                    class="review-button"
+                >
+                    View Flagged Posts
                 </a>
 
             </div>
@@ -179,7 +206,10 @@
         <!-- Navigation -->
         <div class="back-link-container">
 
-            <a href="dashboard.html" class="back-link">
+            <a
+                href="dashboard.html"
+                class="back-link"
+            >
                 ← Back to Dashboard
             </a>
 
@@ -188,4 +218,6 @@
     </main>
 
 </body>
+
 </html>
+
