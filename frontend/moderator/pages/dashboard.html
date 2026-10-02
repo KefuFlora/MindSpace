@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MindSpace | Moderator Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/moderator.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- Navigation -->
+    <header class="dashboard-header">
+
+        <div class="brand">
+
+            <h1>MindSpace</h1>
+
+            <span>
+                Moderator Portal
+            </span>
+
+        </div>
+
+
+        <button
+            id="logoutButton"
+            class="logout-button"
+        >
+            Logout
+        </button>
+
+    </header>
+
+
+
+    <!-- Main Content -->
+    <main class="dashboard-container">
+
+
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+
+            <h2>
+                Moderator Dashboard
+            </h2>
+
+            <p>
+                Welcome to the MindSpace moderation system.
+                Manage reported content and monitor moderation activity.
+            </p>
+
+        </section>
+
+
+
+        <!-- Statistics -->
+        <section class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <h3>
+                    Flagged Posts
+                </h3>
+
+                <p>
+                    3
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>
+                    Flagged Comments
+                </h3>
+
+                <p>
+                    3
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>
+                    Pending Reviews
+                </h3>
+
+                <p>
+                    6
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>
+                    Notifications
+                </h3>
+
+                <p>
+                    3
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- Moderator Menu -->
+        <section class="menu-grid">
+
+
+            <!-- Flagged Posts -->
+            <a
+                href="flagged-post.html"
+                class="menu-card"
+            >
+
+                <h3>
+                    Flagged Posts
+                </h3>
+
+                <p>
+                    View and review posts reported by students.
+                </p>
+
+            </a>
+
+
+
+            <!-- Flagged Comments -->
+            <a
+                href="flagged-comments.html"
+                class="menu-card"
+            >
+
+                <h3>
+                    Flagged Comments
+                </h3>
+
+                <p>
+                    View and review comments reported by students.
+                </p>
+
+            </a>
+
+
+
+            <!-- Review Content -->
+            <a
+                href="review.html?id=post001&type=post"
+                class="menu-card"
+            >
+
+                <h3>
+                    Review Content
+                </h3>
+
+                <p>
+                    Review reported content and decide whether
+                    to approve or remove it.
+                </p>
+
+            </a>
+
+
+
+            <!-- Moderation History -->
+            <a
+                href="history.html"
+                class="menu-card"
+            >
+
+                <h3>
+                    Moderation History
+                </h3>
+
+                <p>
+                    View previous moderation actions and decisions.
+                </p>
+
+            </a>
+
+
+
+            <!-- Notifications -->
+            <a
+                href="notifications.html"
+                class="menu-card"
+            >
+
+                <h3>
+                    Notifications
+                </h3>
+
+                <p>
+                    View moderation alerts and system notifications.
+                </p>
+
+            </a>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- JavaScript -->
+    <script src="../js/dashboard.js"></script>
+
+</body>
+
+</html>

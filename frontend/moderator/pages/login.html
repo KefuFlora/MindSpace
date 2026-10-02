@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MindSpace | Moderator Login</title>
+
+    <link rel="stylesheet" href="../css/moderator.css">
+</head>
+
+<body>
+
+    <main class="login-container">
+
+        <section class="login-card">
+
+            <div class="login-header">
+                <h1>MindSpace</h1>
+                <p>Moderator Portal</p>
+            </div>
+
+            <div class="login-content">
+
+                <h2>Moderator Login</h2>
+
+                <p class="login-description">
+                    Sign in to access the MindSpace moderation system.
+                </p>
+
+                <form id="loginForm">
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email address"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="login-button">
+                        Login
+                    </button>
+
+                    <p id="loginMessage" class="login-message"></p>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="../js/auth.js"></script>
+
+</body>
+</html>

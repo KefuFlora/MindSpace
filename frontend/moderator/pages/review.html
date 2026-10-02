@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MindSpace | Review Content</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/moderator.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- Navigation -->
+    <header class="dashboard-header">
+
+        <div class="brand">
+
+            <h1>MindSpace</h1>
+
+            <span>
+                Moderator Portal
+            </span>
+
+        </div>
+
+
+        <button
+            id="logoutButton"
+            class="logout-button"
+            onclick="window.location.href='login.html'"
+        >
+            Logout
+        </button>
+
+    </header>
+
+
+
+    <!-- Main Content -->
+    <main class="dashboard-container">
+
+
+        <!-- Page Heading -->
+        <section class="welcome-section">
+
+            <h2 id="contentTitle">
+                Review Content
+            </h2>
+
+            <p>
+                Review reported content and make a moderation decision.
+            </p>
+
+        </section>
+
+
+
+        <!-- Review Card -->
+        <section class="review-card">
+
+
+            <!-- Report Information -->
+            <div class="review-section">
+
+                <h3>
+                    Report Information
+                </h3>
+
+
+                <div class="review-information">
+
+                    <p>
+                        <strong>Content ID:</strong>
+
+                        <span id="contentId">
+                            -
+                        </span>
+                    </p>
+
+
+                    <p>
+                        <strong>Content Type:</strong>
+
+                        <span id="contentType">
+                            -
+                        </span>
+                    </p>
+
+
+                    <p>
+                        <strong>Report Reason:</strong>
+
+                        <span id="reportReason">
+                            -
+                        </span>
+                    </p>
+
+
+                    <p>
+                        <strong>Status:</strong>
+
+                        <span class="status pending">
+                            Pending Review
+                        </span>
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Reported Content -->
+            <div class="review-section">
+
+                <h3>
+                    Reported Content
+                </h3>
+
+
+                <div
+                    id="reportedContent"
+                    class="reported-content"
+                >
+                    -
+                </div>
+
+            </div>
+
+
+
+            <!-- Moderator Decision -->
+            <div class="review-section">
+
+                <h3>
+                    Moderator Decision
+                </h3>
+
+
+                <p class="decision-description">
+
+                    Review the reported content carefully before
+                    deciding whether it should remain on the platform
+                    or be removed.
+
+                </p>
+
+
+                <div class="moderation-actions">
+
+                    <button
+                        id="approveButton"
+                        class="approve-button"
+                    >
+                        Approve Content
+                    </button>
+
+
+                    <button
+                        id="removeButton"
+                        class="remove-button"
+                    >
+                        Remove Content
+                    </button>
+
+                </div>
+
+
+                <!-- Action Message -->
+                <div
+                    id="actionMessage"
+                    class="action-message"
+                >
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- Navigation Links -->
+        <div class="review-navigation">
+
+            <a href="flagged-post.html">
+                ← Back to Flagged Posts
+            </a>
+
+
+            <a href="dashboard.html">
+                Back to Dashboard
+            </a>
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- JavaScript -->
+    <script src="../js/review.js"></script>
+
+</body>
+
+</html>
