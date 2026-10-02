@@ -19,7 +19,9 @@
 
 </head>
 
+
 <body>
+
 
     <!-- Navigation -->
     <header class="dashboard-header">
@@ -34,18 +36,35 @@
 
         </div>
 
-        <button
-            id="logoutButton"
-            class="logout-button"
-        >
-            Logout
-        </button>
+
+        <div class="header-actions">
+
+            <button
+                id="themeToggle"
+                class="theme-toggle"
+                type="button"
+            >
+                🌙 Dark Mode
+            </button>
+
+
+            <button
+                id="logoutButton"
+                class="logout-button"
+                type="button"
+            >
+                Logout
+            </button>
+
+        </div>
 
     </header>
 
 
+
     <!-- Main Content -->
     <main class="dashboard-container">
+
 
         <!-- Page Heading -->
         <section class="welcome-section">
@@ -59,6 +78,7 @@
             </p>
 
         </section>
+
 
 
         <!-- Flagged Comments -->
@@ -129,6 +149,7 @@
             </article>
 
 
+
             <!-- COMMENT 002 -->
             <article class="flagged-card">
 
@@ -190,6 +211,7 @@
                 </div>
 
             </article>
+
 
 
             <!-- COMMENT 003 -->
@@ -258,6 +280,7 @@
         </section>
 
 
+
         <!-- Back to Dashboard -->
         <div class="back-link-container">
 
@@ -270,7 +293,9 @@
     </main>
 
 
+
     <!-- JavaScript -->
+    <script src="../js/theme.js"></script>
     <script src="../js/dashboard.js"></script>
 
 </body>

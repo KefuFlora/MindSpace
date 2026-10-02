@@ -19,7 +19,9 @@
 
 </head>
 
+
 <body>
+
 
     <!-- Header -->
     <header class="dashboard-header">
@@ -34,18 +36,35 @@
 
         </div>
 
-        <button
-            class="logout-button"
-            onclick="window.location.href='login.html'"
-        >
-            Logout
-        </button>
+
+        <div class="header-actions">
+
+            <button
+                id="themeToggle"
+                class="theme-toggle"
+                type="button"
+            >
+                🌙 Dark Mode
+            </button>
+
+
+            <button
+                class="logout-button"
+                type="button"
+                onclick="window.location.href='login.html'"
+            >
+                Logout
+            </button>
+
+        </div>
 
     </header>
 
 
+
     <!-- Main Content -->
     <main class="dashboard-container">
+
 
         <!-- Page Heading -->
         <section class="welcome-section">
@@ -60,6 +79,7 @@
             </p>
 
         </section>
+
 
 
         <!-- Notifications List -->
@@ -112,6 +132,7 @@
             </div>
 
 
+
             <!-- Notification 2 -->
             <div class="notification-card unread">
 
@@ -156,6 +177,7 @@
                 </a>
 
             </div>
+
 
 
             <!-- Notification 3 -->
@@ -203,6 +225,7 @@
         </section>
 
 
+
         <!-- Navigation -->
         <div class="back-link-container">
 
@@ -215,9 +238,14 @@
 
         </div>
 
+
     </main>
+
+
+
+    <!-- JavaScript -->
+    <script src="../js/theme.js"></script>
 
 </body>
 
 </html>
-

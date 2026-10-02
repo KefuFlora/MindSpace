@@ -1,37 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>MindSpace | Moderator Login</title>
 
-    <link rel="stylesheet" href="../css/moderator.css">
+    <link
+        rel="stylesheet"
+        href="../css/moderator.css"
+    >
+
 </head>
+
 
 <body>
 
+
+    <!-- Theme Toggle -->
+    <button
+        id="themeToggle"
+        class="theme-toggle login-theme-toggle"
+        type="button"
+    >
+        🌙 Dark Mode
+    </button>
+
+
+
+    <!-- Login -->
     <main class="login-container">
 
         <section class="login-card">
 
+
+            <!-- Login Header -->
             <div class="login-header">
-                <h1>MindSpace</h1>
-                <p>Moderator Portal</p>
+
+                <h1>
+                    MindSpace
+                </h1>
+
+                <p>
+                    Moderator Portal
+                </p>
+
             </div>
 
+
+
+            <!-- Login Content -->
             <div class="login-content">
 
-                <h2>Moderator Login</h2>
+                <h2>
+                    Moderator Login
+                </h2>
 
                 <p class="login-description">
                     Sign in to access the MindSpace moderation system.
                 </p>
 
+
                 <form id="loginForm">
 
+
+                    <!-- Email -->
                     <div class="form-group">
-                        <label for="email">Email Address</label>
+
+                        <label for="email">
+                            Email Address
+                        </label>
 
                         <input
                             type="email"
@@ -40,10 +84,17 @@
                             placeholder="Enter your email address"
                             required
                         >
+
                     </div>
 
+
+
+                    <!-- Password -->
                     <div class="form-group">
-                        <label for="password">Password</label>
+
+                        <label for="password">
+                            Password
+                        </label>
 
                         <input
                             type="password"
@@ -52,13 +103,26 @@
                             placeholder="Enter your password"
                             required
                         >
+
                     </div>
 
-                    <button type="submit" class="login-button">
+
+
+                    <!-- Login Button -->
+                    <button
+                        type="submit"
+                        class="login-button"
+                    >
                         Login
                     </button>
 
-                    <p id="loginMessage" class="login-message"></p>
+
+                    <!-- Login Message -->
+                    <p
+                        id="loginMessage"
+                        class="login-message"
+                    ></p>
+
 
                 </form>
 
@@ -68,7 +132,12 @@
 
     </main>
 
+
+
+    <!-- JavaScript -->
+    <script src="../js/theme.js"></script>
     <script src="../js/auth.js"></script>
 
 </body>
+
 </html>

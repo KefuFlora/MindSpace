@@ -19,7 +19,9 @@
 
 </head>
 
+
 <body>
+
 
     <!-- Navigation -->
     <header class="dashboard-header">
@@ -34,19 +36,36 @@
 
         </div>
 
-        <button
-            id="logoutButton"
-            class="logout-button"
-            onclick="window.location.href='login.html'"
-        >
-            Logout
-        </button>
+
+        <div class="header-actions">
+
+            <button
+                id="themeToggle"
+                class="theme-toggle"
+                type="button"
+            >
+                🌙 Dark Mode
+            </button>
+
+
+            <button
+                id="logoutButton"
+                class="logout-button"
+                type="button"
+                onclick="window.location.href='login.html'"
+            >
+                Logout
+            </button>
+
+        </div>
 
     </header>
 
 
+
     <!-- Main Content -->
     <main class="dashboard-container">
+
 
         <!-- Page Heading -->
         <section class="welcome-section">
@@ -62,9 +81,12 @@
         </section>
 
 
+
         <!-- Moderation History -->
         <section class="history-section">
 
+
+            <!-- History Record 1 -->
             <div class="history-card">
 
                 <div class="history-card-header">
@@ -115,6 +137,8 @@
             </div>
 
 
+
+            <!-- History Record 2 -->
             <div class="history-card">
 
                 <div class="history-card-header">
@@ -165,6 +189,8 @@
             </div>
 
 
+
+            <!-- History Record 3 -->
             <div class="history-card">
 
                 <div class="history-card-header">
@@ -215,7 +241,9 @@
 
             </div>
 
+
         </section>
+
 
 
         <!-- Back to Dashboard -->
@@ -227,7 +255,13 @@
 
         </div>
 
+
     </main>
+
+
+
+    <!-- JavaScript -->
+    <script src="../js/theme.js"></script>
 
 </body>
 
