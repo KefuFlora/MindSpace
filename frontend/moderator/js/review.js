@@ -1,224 +1,145 @@
-document.addEventListener("DOMContentLoaded", function () {
-
-    const approveButton =
-        document.getElementById("approveButton");
-
-    const removeButton =
-        document.getElementById("removeButton");
-
-    const actionMessage =
-        document.getElementById("actionMessage");
-
-    const contentTitle =
-        document.getElementById("contentTitle");
-
-    const contentTypeDisplay =
-        document.getElementById("contentType");
-
-    const contentIdDisplay =
-        document.getElementById("contentId");
-
-    const reportReasonDisplay =
-        document.getElementById("reportReason");
-
-    const reportedContentDisplay =
-        document.getElementById("reportedContent");
+document.addEventListener("DOMContentLoaded", () => {
+const params = new URLSearchParams(window.location.search);
+const contentId = params.get("id");
+const contentType = params.get("type");
 
 
-    // Get information from the URL
-    const urlParams =
-        new URLSearchParams(window.location.search);
+const contentTitle = document.getElementById("contentTitle");
+const contentTypeElement = document.getElementById("contentType");
+const contentIdElement = document.getElementById("contentId");
+const reportReason = document.getElementById("reportReason");
+const reportedContent = document.getElementById("reportedContent");
+const approveButton = document.getElementById("approveButton");
+const removeButton = document.getElementById("removeButton");
 
-    const contentId =
-        urlParams.get("id");
+let selectedComment = null;
 
-    const contentType =
-        urlParams.get("type");
-
-
-    // Sample flagged posts
-    const flaggedPosts = {
-
-        post001: {
-            type: "Post",
-            reason: "Inappropriate content",
-            content:
-                "I've been struggling with the amount of academic pressure I'm experiencing this semester..."
-        },
-
-        post002: {
-            type: "Post",
-            reason: "Harassment",
-            content:
-                "Has anyone else experienced problems with students being disrespectful during group projects?"
-        },
-
-        post003: {
-            type: "Post",
-            reason: "Off-topic content",
-            content:
-                "I don't think this discussion belongs in the student support community..."
-        }
-
-    };
-
-
-    // Sample flagged comments
-    const flaggedComments = {
-
-        comment001: {
-            type: "Comment",
-            reason: "Inappropriate language",
-            content:
-                "I completely understand what you're going through. You're definitely not alone in dealing with university pressure."
-        },
-
-        comment002: {
-            type: "Comment",
-            reason: "Harassment",
-            content:
-                "You should stop complaining and just work harder like everyone else."
-        },
-
-        comment003: {
-            type: "Comment",
-            reason: "Spam",
-            content:
-                "This is a university support forum. I don't think advertisements belong here."
-        }
-
-    };
-
-
-    // Select the correct content collection
-    let selectedContent = null;
-
-    if (contentType === "post") {
-
-        selectedContent =
-            flaggedPosts[contentId];
-
-    } else if (contentType === "comment") {
-
-        selectedContent =
-            flaggedComments[contentId];
-
+async function loadComment() {
+    if (contentType !== "comment" || !contentId) {
+        return false;
     }
 
+    try {
+        const response = await fetch(
+            "http://localhost:8080/api/flagged-comments"
+        );
 
-    // Display selected content
-    if (selectedContent) {
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
 
-        const displayId =
-            contentId
-                .replace("post", "Post #")
-                .replace("comment", "Comment #");
+        const comments = await response.json();
 
+        selectedComment = comments.find(
+            comment => comment.commentId === contentId
+        );
 
-        contentTitle.textContent =
-            "Review " + displayId;
+        if (!selectedComment) {
+            throw new Error("The flagged comment could not be found.");
+        }
 
+        if (contentTitle) {
+            contentTitle.textContent = "Review Flagged Comment";
+        }
 
-        contentIdDisplay.textContent =
-            displayId;
+        if (contentTypeElement) {
+            contentTypeElement.textContent = "Comment";
+        }
 
+        if (contentIdElement) {
+            contentIdElement.textContent = selectedComment.commentId;
+        }
 
-        contentTypeDisplay.textContent =
-            selectedContent.type;
+        if (reportReason) {
+            reportReason.textContent = selectedComment.reportReason;
+        }
 
+        if (reportedContent) {
+            reportedContent.textContent = selectedComment.commentContent;
+        }
 
-        reportReasonDisplay.textContent =
-            selectedContent.reason;
+        return true;
+    } catch (error) {
+        console.error("Unable to load flagged comment:", error);
+        alert("Unable to load this comment. Please check that the backend is running.");
+        return false;
+    }
+}
 
-
-        reportedContentDisplay.textContent =
-            '"' + selectedContent.content + '"';
-
-    } else {
-
-        contentTitle.textContent =
-            "Review Content";
-
-
-        contentIdDisplay.textContent =
-            "No content selected";
-
-
-        contentTypeDisplay.textContent =
-            contentType || "Unknown";
-
-
-        reportReasonDisplay.textContent =
-            "No report information available";
-
-
-        reportedContentDisplay.textContent =
-            "Please return to the flagged content list and select content to review.";
-
+async function updateCommentStatus(newStatus) {
+    if (!selectedComment || selectedComment.id == null) {
+        alert("No comment is loaded. Please return to the flagged comments page and try again.");
+        return;
     }
 
+    approveButton.disabled = true;
+    removeButton.disabled = true;
 
-    // Approve Content
-    approveButton.addEventListener(
-        "click",
-        function () {
+    try {
+        const updatedComment = {
+            commentId: selectedComment.commentId,
+            commentContent: selectedComment.commentContent,
+            reportReason: selectedComment.reportReason,
+            status: newStatus,
+            flaggedDate: selectedComment.flaggedDate
+        };
 
-            const confirmed =
-                confirm(
-                    "Are you sure you want to approve this content?"
-                );
-
-
-            if (!confirmed) {
-                return;
+        const response = await fetch(
+            `http://localhost:8080/api/flagged-comments/${selectedComment.id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(updatedComment)
             }
+        );
 
-
-            actionMessage.textContent =
-                "Content has been approved successfully.";
-
-
-            actionMessage.className =
-                "action-message success";
-
-
-            approveButton.disabled = true;
-
-            removeButton.disabled = true;
-
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
         }
-    );
 
+        selectedComment = await response.json();
 
-    // Remove Content
-    removeButton.addEventListener(
-        "click",
-        function () {
+        alert(`Comment ${newStatus.toLowerCase()} successfully.`);
 
-            const confirmed =
-                confirm(
-                    "Are you sure you want to remove this content?"
-                );
+        window.location.href = "./flagged-comments.html";
+    } catch (error) {
+        console.error("Unable to update comment:", error);
+        alert("The comment could not be updated. Please check that the backend is running and try again.");
 
+        approveButton.disabled = false;
+        removeButton.disabled = false;
+    }
+}
 
-            if (!confirmed) {
-                return;
+if (approveButton) {
+    approveButton.addEventListener("click", async () => {
+        if (contentType === "comment") {
+            await updateCommentStatus("Approved");
+        } else {
+            alert("Post approval is not connected to the backend yet.");
+        }
+    });
+}
+
+if (removeButton) {
+    removeButton.addEventListener("click", async () => {
+        if (contentType === "comment") {
+            const confirmed = window.confirm(
+                "Are you sure you want to remove this comment from the flagged content?"
+            );
+
+            if (confirmed) {
+                await updateCommentStatus("Removed");
             }
-
-
-            actionMessage.textContent =
-                "Content has been removed successfully.";
-
-
-            actionMessage.className =
-                "action-message removed";
-
-
-            approveButton.disabled = true;
-
-            removeButton.disabled = true;
-
+        } else {
+            alert("Post removal is not connected to the backend yet.");
         }
-    );
+    });
+}
 
+if (contentType === "comment") {
+    loadComment();
+}
 });

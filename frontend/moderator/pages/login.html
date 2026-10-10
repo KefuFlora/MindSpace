@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -16,12 +15,9 @@
         rel="stylesheet"
         href="../css/moderator.css"
     >
-
 </head>
 
-
 <body>
-
 
     <!-- Theme Toggle -->
     <button
@@ -32,43 +28,38 @@
         🌙 Dark Mode
     </button>
 
-
-
-    <!-- Login -->
+    <!-- Login Page -->
     <main class="login-container">
 
         <section class="login-card">
 
+            <!-- MindSpace Logo -->
+            <img
+                src="../../logo/logo_Anonymous.jpeg"
+                alt="MindSpace Anonymous Logo"
+                class="login-logo"
+            >
 
             <!-- Login Header -->
             <div class="login-header">
 
-                <h1>
-                    MindSpace
-                </h1>
+                <h1>MindSpace</h1>
 
-                <p>
-                    Moderator Portal
-                </p>
+                <p>Moderator Portal</p>
 
             </div>
-
-
 
             <!-- Login Content -->
             <div class="login-content">
 
-                <h2>
-                    Moderator Login
-                </h2>
+                <h2>Moderator Login</h2>
 
                 <p class="login-description">
                     Sign in to access the MindSpace moderation system.
                 </p>
 
-
+                <!-- Login Form -->
                 <form id="loginForm">
-
 
                     <!-- Email -->
                     <div class="form-group">
@@ -82,12 +73,11 @@
                             id="email"
                             name="email"
                             placeholder="Enter your email address"
+                            autocomplete="username"
                             required
                         >
 
                     </div>
-
-
 
                     <!-- Password -->
                     <div class="form-group">
@@ -101,12 +91,11 @@
                             id="password"
                             name="password"
                             placeholder="Enter your password"
+                            autocomplete="current-password"
                             required
                         >
 
                     </div>
-
-
 
                     <!-- Login Button -->
                     <button
@@ -116,13 +105,13 @@
                         Login
                     </button>
 
-
                     <!-- Login Message -->
                     <p
                         id="loginMessage"
                         class="login-message"
+                        role="status"
+                        aria-live="polite"
                     ></p>
-
 
                 </form>
 
@@ -131,8 +120,6 @@
         </section>
 
     </main>
-
-
 
     <!-- JavaScript -->
     <script src="../js/theme.js"></script>

@@ -1,7 +1,7 @@
 const loginForm = document.getElementById("loginForm");
 const loginMessage = document.getElementById("loginMessage");
 
-loginForm.addEventListener("submit", function (event) {
+loginForm.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
@@ -13,5 +13,49 @@ loginForm.addEventListener("submit", function (event) {
         return;
     }
 
-    loginMessage.textContent = "Login functionality will be connected to the Java backend.";
+    loginMessage.textContent = "Logging in...";
+
+    try {
+
+        const response = await fetch("http://localhost:8080/api/moderators/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: email,
+                password: password
+            })
+        });
+
+        if (response.ok) {
+
+            const data = await response.json();
+
+            loginMessage.textContent = "Login successful!";
+
+            sessionStorage.setItem("moderator", JSON.stringify(data));
+
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 1000);
+
+        } else {
+
+            const errorMessage = await response.text();
+
+            loginMessage.textContent =
+                errorMessage || "Invalid email or password.";
+
+        }
+
+    } catch (error) {
+
+        console.error("Login error:", error);
+
+        loginMessage.textContent =
+            "Unable to connect to the server. Please try again.";
+
+    }
+
 });
