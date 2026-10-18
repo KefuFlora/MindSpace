@@ -1,145 +1,152 @@
+
 document.addEventListener("DOMContentLoaded", () => {
-const params = new URLSearchParams(window.location.search);
-const contentId = params.get("id");
-const contentType = params.get("type");
+    const params = new URLSearchParams(window.location.search);
+    const contentId = params.get("id");
+    const contentType = params.get("type");
 
+    const contentTitle = document.getElementById("contentTitle");
+    const contentTypeElement = document.getElementById("contentType");
+    const contentIdElement = document.getElementById("contentId");
+    const reportReason = document.getElementById("reportReason");
+    const reportedContent = document.getElementById("reportedContent");
+    const approveButton = document.getElementById("approveButton");
+    const removeButton = document.getElementById("removeButton");
+    const statusElement = document.querySelector(".status");
 
-const contentTitle = document.getElementById("contentTitle");
-const contentTypeElement = document.getElementById("contentType");
-const contentIdElement = document.getElementById("contentId");
-const reportReason = document.getElementById("reportReason");
-const reportedContent = document.getElementById("reportedContent");
-const approveButton = document.getElementById("approveButton");
-const removeButton = document.getElementById("removeButton");
+    let selectedContent = null;
 
-let selectedComment = null;
+    const baseUrl = {
+        post: "http://localhost:8080/api/flagged-posts",
+        comment: "http://localhost:8080/api/flagged-comments"
+    };
 
-async function loadComment() {
-    if (contentType !== "comment" || !contentId) {
-        return false;
-    }
-
-    try {
-        const response = await fetch(
-            "http://localhost:8080/api/flagged-comments"
-        );
-
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status}`);
+    // Load the selected flagged post or comment.
+    async function loadContent() {
+        if (!contentId || !baseUrl[contentType]) {
+            alert("Invalid content ID or type.");
+            return;
         }
 
-        const comments = await response.json();
+        try {
+            const response = await fetch(
+                `${baseUrl[contentType]}/${contentType}/${encodeURIComponent(contentId)}`
+            );
 
-        selectedComment = comments.find(
-            comment => comment.commentId === contentId
-        );
-
-        if (!selectedComment) {
-            throw new Error("The flagged comment could not be found.");
-        }
-
-        if (contentTitle) {
-            contentTitle.textContent = "Review Flagged Comment";
-        }
-
-        if (contentTypeElement) {
-            contentTypeElement.textContent = "Comment";
-        }
-
-        if (contentIdElement) {
-            contentIdElement.textContent = selectedComment.commentId;
-        }
-
-        if (reportReason) {
-            reportReason.textContent = selectedComment.reportReason;
-        }
-
-        if (reportedContent) {
-            reportedContent.textContent = selectedComment.commentContent;
-        }
-
-        return true;
-    } catch (error) {
-        console.error("Unable to load flagged comment:", error);
-        alert("Unable to load this comment. Please check that the backend is running.");
-        return false;
-    }
-}
-
-async function updateCommentStatus(newStatus) {
-    if (!selectedComment || selectedComment.id == null) {
-        alert("No comment is loaded. Please return to the flagged comments page and try again.");
-        return;
-    }
-
-    approveButton.disabled = true;
-    removeButton.disabled = true;
-
-    try {
-        const updatedComment = {
-            commentId: selectedComment.commentId,
-            commentContent: selectedComment.commentContent,
-            reportReason: selectedComment.reportReason,
-            status: newStatus,
-            flaggedDate: selectedComment.flaggedDate
-        };
-
-        const response = await fetch(
-            `http://localhost:8080/api/flagged-comments/${selectedComment.id}`,
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(updatedComment)
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
             }
-        );
 
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status}`);
+            selectedContent = await response.json();
+
+            if (contentTitle) {
+                contentTitle.textContent =
+                    contentType === "post"
+                        ? "Review Flagged Post"
+                        : "Review Flagged Comment";
+            }
+
+            if (contentTypeElement) {
+                contentTypeElement.textContent =
+                    contentType === "post" ? "Post" : "Comment";
+            }
+
+            if (contentIdElement) {
+                contentIdElement.textContent =
+                    contentType === "post"
+                        ? selectedContent.postId
+                        : selectedContent.commentId;
+            }
+
+            if (reportReason) {
+                reportReason.textContent = selectedContent.reportReason;
+            }
+
+            if (reportedContent) {
+                reportedContent.textContent =
+                    contentType === "post"
+                        ? selectedContent.postContent
+                        : selectedContent.commentContent;
+            }
+
+            if (statusElement) {
+                statusElement.textContent = selectedContent.status;
+            }
+        } catch (error) {
+            console.error("Unable to load flagged content:", error);
+            alert(
+                "Unable to load the flagged content. Check that the backend is running and the content exists."
+            );
         }
-
-        selectedComment = await response.json();
-
-        alert(`Comment ${newStatus.toLowerCase()} successfully.`);
-
-        window.location.href = "./flagged-comments.html";
-    } catch (error) {
-        console.error("Unable to update comment:", error);
-        alert("The comment could not be updated. Please check that the backend is running and try again.");
-
-        approveButton.disabled = false;
-        removeButton.disabled = false;
     }
-}
 
-if (approveButton) {
-    approveButton.addEventListener("click", async () => {
-        if (contentType === "comment") {
-            await updateCommentStatus("Approved");
-        } else {
-            alert("Post approval is not connected to the backend yet.");
+    // Update the report status in the database.
+    async function updateStatus(newStatus) {
+        if (!selectedContent || selectedContent.id == null) {
+            alert("No content is loaded. Please return to the flagged content list.");
+            return;
         }
-    });
-}
 
-if (removeButton) {
-    removeButton.addEventListener("click", async () => {
-        if (contentType === "comment") {
+        approveButton.disabled = true;
+        removeButton.disabled = true;
+
+        try {
+            const response = await fetch(
+                `${baseUrl[contentType]}/${selectedContent.id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        ...selectedContent,
+                        status: newStatus
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+
+            selectedContent = await response.json();
+
+            alert(
+                `${contentType === "post" ? "Post" : "Comment"} status updated to ${newStatus}.`
+            );
+
+            window.location.href =
+                contentType === "post"
+                    ? "./flagged-post.html"
+                    : "./flagged-comments.html";
+        } catch (error) {
+            console.error("Unable to update flagged content:", error);
+
+            alert(
+                "Unable to update the status. Check the backend and try again."
+            );
+
+            approveButton.disabled = false;
+            removeButton.disabled = false;
+        }
+    }
+
+    if (approveButton) {
+        approveButton.addEventListener("click", () => {
+            updateStatus("Approved");
+        });
+    }
+
+    if (removeButton) {
+        removeButton.addEventListener("click", () => {
             const confirmed = window.confirm(
-                "Are you sure you want to remove this comment from the flagged content?"
+                `Are you sure you want to mark this ${contentType} as Removed?`
             );
 
             if (confirmed) {
-                await updateCommentStatus("Removed");
+                updateStatus("Removed");
             }
-        } else {
-            alert("Post removal is not connected to the backend yet.");
-        }
-    });
-}
+        });
+    }
 
-if (contentType === "comment") {
-    loadComment();
-}
+    loadContent();
 });

@@ -32,6 +32,9 @@
     --reported-background: #f7f7f7;
 
     --shadow: rgba(0, 0, 0, 0.08);
+
+        --login-button-background: #A855F7;
+    --login-button-hover: #9333EA;
 }
 
 
@@ -40,11 +43,11 @@
    ========================================= */
 
 body.dark-mode {
-    --background: #050505;
+    --background: #173B70;
     --card-background: #111111;
     --header-background: #0a0a0a;
     --primary-blue: #1c3d85;
-    --primary-blue-hover: #3b82f6;
+    --primary-blue-hover: #244E8C;
 
     --heading-text: #ffffff;
     --body-text: #e5e7eb;
@@ -92,8 +95,8 @@ body {
     --primary-blue: #2563eb;
     --primary-blue-hover: #1d4ed8;
 
-    --login-button-background: #EFA6C4;
-    --login-button-hover: #E58DB3;
+    --login-button-background: #daa6ef;
+    --login-button-hover: #c28de5;
 }
 
 /* Dark mode settings */
@@ -156,6 +159,7 @@ body.dark-mode {
     height: 200px;
     max-width: 100%;
     object-fit: contain;
+    background-color: #000000;
     margin: 0 auto 25px;
 }
 
@@ -1072,4 +1076,24 @@ body.dark-mode .login-button:hover {
     .login-description {
         margin-bottom: 20px;
     }
+}
+/* =========================================
+   MODERATOR LOGIN BUTTON
+   ========================================= */
+
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--login-button-background);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: var(--login-button-hover);
 }
