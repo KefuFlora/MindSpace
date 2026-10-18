@@ -22,3 +22,6 @@ Thumbs.db
 
 # Local database backups
 *.sql
+!database/
+database/*
+!database/mindspace_db.sql
