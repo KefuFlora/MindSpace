@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | MindSpace</title>
+    <link rel="stylesheet" href="../css/notifications.css">
+    <script src="../js/notifications.js" defer></script>
+</head>
+<body>
+    <header class="notifications-header">
+        <a href="posts.html" class="back-button" aria-label="Back to feed">
+            &#8592;
+        </a>
+
+        <a href="posts.html" class="brand">
+            <img src="../assets/images/mindspace-logo.png"
+                 alt="MindSpace logo">
+            <span>MindSpace</span>
+        </a>
+    </header>
+
+    <main class="notifications-container">
+        <div class="page-heading">
+            <div>
+                <h1>Notifications</h1>
+                <p class="page-description">
+                    Updates and activity from your MindSpace community.
+                </p>
+            </div>
+
+            <button type="button" id="markAllReadButton" class="text-button">
+                Mark all as read
+            </button>
+        </div>
+
+        <section class="notification-summary" aria-live="polite">
+            <span id="notificationCount">0 unread notifications</span>
+        </section>
+
+        <section id="notificationsList"
+                 class="notifications-list"
+                 aria-label="Your notifications">
+        </section>
+
+        <div id="emptyState" class="empty-state" hidden>
+            <div class="empty-icon">
+                <span aria-hidden="true">&#128276;</span>
+            </div>
+            <h2>You're all caught up</h2>
+            <p>When there's activity to share, you'll find it here.</p>
+            <a href="posts.html" class="return-button">Return to feed</a>
+        </div>
+
+        <div class="notification-footer">
+            <button type="button" id="clearAllButton" class="clear-button">
+                Clear all notifications
+            </button>
+        </div>
+
+        <p id="pageMessage" class="page-message" role="status"></p>
+    </main>
+</body>
+</html>

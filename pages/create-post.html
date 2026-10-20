@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post | MindSpace</title>
+    <link rel="stylesheet" href="../css/create-post.css">
+</head>
+<body>
+    <main class="create-post-screen">
+
+        <header class="create-post-header">
+            <button type="button" id="closeButton"
+                class="close-button" aria-label="Cancel and return">
+                &times;
+            </button>
+            <h1>Create Post</h1>
+        </header>
+
+        <form id="createPostForm">
+
+            <div class="topic-field">
+                <label for="postTopic">Select Topic</label>
+
+                <select id="postTopic" name="topic" required>
+                    <option value="Financial Stress">Financial Stress</option>
+                    <option value="Academic Stress">Academic Stress</option>
+                    <option value="Anxiety">Anxiety</option>
+                    <option value="Depression">Depression</option>
+                    <option value="General Support">General Support</option>
+                </select>
+            </div>
+
+            <div class="post-content-field">
+                <label for="postContent" class="visually-hidden">
+                    Share your thoughts
+                </label>
+
+                <textarea
+                    id="postContent"
+                    name="content"
+                    placeholder="Share your thoughts...&#10;(Your post is anonymous)"
+                    maxlength="2000"
+                    required></textarea>
+            </div>
+
+            <div class="sensitivity-setting">
+                <label for="triggerWarning">
+                    Add Trigger /Sensitivity Warning
+                    <span>e.g. anxiety, depression</span>
+                </label>
+
+                <label class="toggle-switch">
+                    <input type="checkbox" id="triggerWarning">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div id="warningDetails" class="warning-details" hidden>
+                <label for="warningText">Content warning</label>
+                <input
+                    type="text"
+                    id="warningText"
+                    placeholder="e.g. mentions of anxiety"
+                    maxlength="100">
+            </div>
+
+            <aside class="safety-reminder">
+                <p>
+                    Please be kind and respectful.<br>
+                    Our moderators keep this community safe.
+                </p>
+                <span class="safety-icon" aria-hidden="true">♢</span>
+            </aside>
+
+            <p id="formMessage" class="form-message"
+                role="status" aria-live="polite"></p>
+
+            <button type="submit" class="submit-post-button">
+                Post Anonymously
+            </button>
+
+        </form>
+    </main>
+
+    <script src="../js/create-post.js"></script>
+</body>
+</html>

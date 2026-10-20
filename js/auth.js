@@ -1,3 +1,4 @@
+
 /* =========================================
    REGISTER FORM
    ========================================= */
@@ -5,9 +6,7 @@
 const registerForm = document.getElementById("registerForm");
 
 if (registerForm) {
-
     registerForm.addEventListener("submit", function (event) {
-
         event.preventDefault();
 
         const username = document.getElementById("username").value.trim();
@@ -15,21 +14,15 @@ if (registerForm) {
         const password = document.getElementById("password").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
 
-        /* Check that passwords match */
-
         if (password !== confirmPassword) {
             alert("Passwords do not match.");
             return;
         }
 
-        /* Check password length */
-
         if (password.length < 8) {
             alert("Password must be at least 8 characters long.");
             return;
         }
-
-        /* Temporary registration confirmation */
 
         alert("Account created successfully!");
 
@@ -44,9 +37,7 @@ if (registerForm) {
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
-
     loginForm.addEventListener("submit", function (event) {
-
         event.preventDefault();
 
         const email = document.getElementById("email").value.trim();
@@ -57,10 +48,33 @@ if (loginForm) {
             return;
         }
 
-        /* Temporary login confirmation */
+        // Create a temporary login session for the prototype.
+        sessionStorage.setItem("mindspaceLoggedIn", "true");
 
         alert("Login successful!");
 
         loginForm.reset();
     });
 }
+
+/* =========================================
+   LOGOUT
+   ========================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+    const logoutButton = document.getElementById("logoutButton");
+
+    if (!logoutButton) return;
+
+    logoutButton.addEventListener("click", function () {
+        const confirmed = window.confirm(
+            "Are you sure you want to log out?"
+        );
+
+        if (!confirmed) return;
+
+        sessionStorage.removeItem("mindspaceLoggedIn");
+
+        window.location.href = "login.html";
+    });
+});

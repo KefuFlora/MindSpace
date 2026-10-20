@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Post | MindSpace</title>
+    <link rel="stylesheet" href="../css/report-post.css">
+</head>
+<body>
+    <main class="report-screen">
+        <header class="report-header">
+            <button type="button" id="backButton" class="back-button"
+                aria-label="Return to feed">&larr;</button>
+            <h1>Report Post</h1>
+        </header>
+
+        <section class="report-intro">
+            <div class="report-icon" aria-hidden="true">!</div>
+            <h2>Help keep MindSpace safe</h2>
+            <p>
+                If a post makes you uncomfortable or goes against our
+                community guidelines, let us know. Your report is private.
+            </p>
+        </section>
+
+        <section class="reported-post-card" aria-labelledby="reportedPostHeading">
+            <h2 id="reportedPostHeading">Post being reported</h2>
+            <p id="reportedPostText">Loading selected post...</p>
+        </section>
+
+        <form id="reportForm">
+            <fieldset class="reason-fieldset">
+                <legend>Why are you reporting this post?</legend>
+                <p class="field-hint">Select the reason that best describes your concern.</p>
+
+                <label class="reason-option">
+                    <input type="radio" name="reportReason"
+                        value="Harassment or bullying" required>
+                    <span>
+                        <strong>Harassment or bullying</strong>
+                        <small>Targeting, insulting or intimidating someone.</small>
+                    </span>
+                </label>
+
+                <label class="reason-option">
+                    <input type="radio" name="reportReason"
+                        value="Harmful or unsafe content">
+                    <span>
+                        <strong>Harmful or unsafe content</strong>
+                        <small>Content that could put someone at risk.</small>
+                    </span>
+                </label>
+
+                <label class="reason-option">
+                    <input type="radio" name="reportReason"
+                        value="Hate speech or discrimination">
+                    <span>
+                        <strong>Hate speech or discrimination</strong>
+                        <small>Attacks or unfair treatment based on identity.</small>
+                    </span>
+                </label>
+
+                <label class="reason-option">
+                    <input type="radio" name="reportReason"
+                        value="Spam or misleading content">
+                    <span>
+                        <strong>Spam or misleading content</strong>
+                        <small>Unwanted promotions or deceptive information.</small>
+                    </span>
+                </label>
+
+                <label class="reason-option">
+                    <input type="radio" name="reportReason"
+                        value="Inappropriate content">
+                    <span>
+                        <strong>Inappropriate content</strong>
+                        <small>Content that does not belong in this community.</small>
+                    </span>
+                </label>
+
+                <label class="reason-option">
+                    <input type="radio" name="reportReason"
+                        value="Other">
+                    <span>
+                        <strong>Other</strong>
+                        <small>A different concern not listed above.</small>
+                    </span>
+                </label>
+            </fieldset>
+
+            <div class="details-field">
+                <label for="reportDetails">Additional details <span>(optional)</span></label>
+                <textarea id="reportDetails" name="details"
+                    maxlength="1000" rows="4"
+                    placeholder="Tell us a little more about your concern..."></textarea>
+            </div>
+
+            <p id="reportMessage" class="report-message"
+                role="status" aria-live="polite"></p>
+
+            <button type="submit" class="submit-report-button">
+                Submit Report
+            </button>
+
+            <button type="button" id="cancelButton" class="cancel-button">
+                Cancel
+            </button>
+
+            <p class="privacy-note">
+                Please only submit reports about genuine concerns.
+                Thank you for helping keep our community respectful.
+            </p>
+        </form>
+    </main>
+
+    <script src="../js/report-post.js"></script>
+</body>
+</html>
