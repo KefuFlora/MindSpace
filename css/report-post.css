@@ -1,8 +1,8 @@
 :root {
     --report-background: #d9d9d9;
     --report-card: #ffffff;
-    --report-purple: #d197dd;
-    --report-purple-dark: #9856a7;
+    --report-purple: #ce0801;
+    --report-purple-dark: #ce9391;
     --report-pink: #f04478;
     --report-text: #252525;
     --report-muted: #6d6d6d;
@@ -138,6 +138,7 @@ button {
 }
 
 .reason-option {
+    position: relative;
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -146,26 +147,29 @@ button {
     border: 1px solid var(--report-border);
     border-radius: 10px;
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
+    transition: border-color 0.2s, background-color 0.2s;
 }
 
-.reason-option:has(input:checked) {
-    border-color: var(--report-purple-dark);
-    background: #faf3fc;
-}
-
-.reason-option input {
+.reason-option input[type="radio"] {
     flex-shrink: 0;
     width: 18px;
     height: 18px;
     margin-top: 2px;
+    cursor: pointer;
     accent-color: var(--report-purple-dark);
+    pointer-events: auto;
 }
 
 .reason-option span {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    pointer-events: none;
+}
+
+.reason-option:has(input:checked) {
+    border-color: var(--report-purple-dark);
+    background: #faf3fc;
 }
 
 .reason-option strong {

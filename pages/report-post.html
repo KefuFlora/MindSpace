@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report Post | MindSpace</title>
     <link rel="stylesheet" href="../css/report-post.css">
+    <link rel="stylesheet" href="../css/theme.css">
 </head>
 <body>
     <main class="report-screen">
@@ -12,6 +13,16 @@
             <button type="button" id="backButton" class="back-button"
                 aria-label="Return to feed">&larr;</button>
             <h1>Report Post</h1>
+
+            <div class="theme-toggle-container">
+    <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
+    <label for="themeToggle" class="theme-toggle-label">
+        <span class="toggle-sun">☀</span>
+        <span class="toggle-moon">☾</span>
+        <span class="toggle-knob"></span>
+    </label>
+</div>
+
         </header>
 
         <section class="report-intro">
@@ -114,5 +125,6 @@
     </main>
 
     <script src="../js/report-post.js"></script>
+    <script src="../js/theme.js"></script>
 </body>
 </html>

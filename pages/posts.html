@@ -8,15 +8,15 @@
     <title>Academic Stress - MindSpace</title>
 
     <link rel="stylesheet" href="../css/posts.css">
+    <link rel="stylesheet" href="../css/theme.css">
 </head>
 
 <body>
 
     <main class="feed-screen">
-
-        <!-- Topic header -->
-        <header class="feed-header">
-            <button class="back-button" id="backButton"
+<!-- Topic header -->
+<header class="feed-header">
+    <button class="back-button" id="backButton"
                 aria-label="Go back">
                 <svg viewBox="0 0 48 48" aria-hidden="true">
                     <path d="M25 5 L7 24 L25 43 M7 24 H43"
@@ -26,217 +26,45 @@
                 </svg>
             </button>
 
-            <h1>Academic Stress</h1>
-            <a href="notifications.html" class="notifications-link"
-             aria-label="Notifications">
-            🔔 Notifications
-            </a>
-        </header>
+    <h1>Academic Stress</h1>
 
-        <button type="button" id="logoutButton" class="logout-button">
-         Logout
-        </button>
+    <a href="notifications.html" class="notifications-link"
+       aria-label="Notifications">
+        🔔 Notifications
+    </a>
 
-        <!-- Feed tabs -->
-        <nav class="feed-tabs" aria-label="Feed options">
-            <button class="tab-button active"
-                data-feed="top" aria-pressed="true">
-                Top
-            </button>
+    <a href="profile.html" class="profile-link">
+        👤 My Profile
+    </a>
 
-            <button class="tab-button"
-                data-feed="following" aria-pressed="false">
-                Following
-            </button>
-        </nav>
+    <div class="theme-toggle-container">
+        <input type="checkbox" id="themeToggle"
+               aria-label="Toggle dark mode">
+
+        <label for="themeToggle" class="theme-toggle-label">
+            <span class="toggle-sun">☀</span>
+            <span class="toggle-moon">☾</span>
+            <span class="toggle-knob"></span>
+        </label>
+    </div>
+</header>
+
+<!-- Feed tabs: outside the header -->
+<nav class="feed-tabs" aria-label="Feed options">
+    <button class="tab-button active"
+            data-feed="top" aria-pressed="true">
+        Top
+    </button>
+
+    <button class="tab-button"
+            data-feed="following" aria-pressed="false">
+        Following
+    </button>
+</nav>
 
         <!-- Community posts -->
         <section class="feed-posts" id="postsList"
             aria-label="Community posts">
-
-            <article class="post" data-post-id="1">
-
-                <div class="post-header">
-                    <div class="post-author">
-                        <div class="avatar" aria-hidden="true">
-                            <svg viewBox="0 0 64 64">
-                                <circle cx="32" cy="22" r="14"
-                                    fill="currentColor"/>
-                                <path d="M6 59 C7 42 19 37 32 37
-                                    C45 37 57 42 58 59 Z"
-                                    fill="currentColor"/>
-                            </svg>
-                        </div>
-
-                        <div class="author-details">
-                            <h2>RoseLilly23</h2>
-                            <time>2h ago</time>
-                        </div>
-                    </div>
-
-                    <button class="post-menu-button"
-                        aria-label="Post options"
-                        aria-expanded="false">
-                        •••
-                    </button>
-
-                   <div class="post-menu" hidden>
-    <button type="button" class="edit-post" hidden>Edit post</button>
-    <button type="button" class="delete-post" hidden>Delete post</button>
-    <button type="button" class="report-post">Report post</button>
-</div>
-                </div>
-
-                <p class="post-content">
-                    Any tips on how to help me manage my time while
-                    studying? I feel overwhelmed.
-                </p>
-
-                <div class="post-actions">
-                    <button class="like-button liked"
-                        aria-label="Like post" aria-pressed="true">
-                        <span class="heart-icon" aria-hidden="true">♥</span>
-                        <span class="like-count">20</span>
-                    </button>
-
-                    <button class="comment-button"
-                        aria-label="View 7 comments">
-                        <svg viewBox="0 0 48 48" aria-hidden="true">
-                            <path d="M5 7 H43 V34 H25 L14 44 V34 H5 Z"
-                                fill="currentColor"
-                                stroke="currentColor"
-                                stroke-linejoin="round"/>
-                        </svg>
-                        <span class="comment-count">7</span>
-                    </button>
-
-                    <button class="bookmark-button"
-                        aria-label="Bookmark post"
-                        aria-pressed="false">
-                        <svg viewBox="0 0 40 48" aria-hidden="true">
-                            <path d="M5 3 H35 V44 L20 29 L5 44 Z"
-                                fill="none" stroke="currentColor"
-                                stroke-width="2"/>
-                        </svg>
-                    </button>
-                </div>
-
-            <div class="comments-section" hidden>
-                <div class="comments-list">
-                    <p class="existing-comment">
-                        <strong>StudyBuddy:</strong>
-                        Try breaking your tasks into smaller steps
-                        and taking short breaks between study sessions.
-                    </p>
-                </div>
-
-                <form class="comment-form">
-                    <label for="comment-input-1">Add a comment</label>
-                    <textarea
-                        id="comment-input-1"
-                        class="comment-input"
-                        placeholder="Share a supportive response..."
-                        rows="2"
-                        required></textarea>
-
-                    <button type="submit" class="submit-comment">
-                        Comment
-                    </button>
-                </form>
-            </div>
-        </article>
-
-            <article class="post" data-post-id="2">
-
-                <div class="post-header">
-                    <div class="post-author">
-                        <div class="avatar" aria-hidden="true">
-                            <svg viewBox="0 0 64 64">
-                                <circle cx="32" cy="22" r="14"
-                                    fill="currentColor"/>
-                                <path d="M6 59 C7 42 19 37 32 37
-                                    C45 37 57 42 58 59 Z"
-                                    fill="currentColor"/>
-                            </svg>
-                        </div>
-
-                        <div class="author-details">
-                            <h2>theretired6</h2>
-                            <time>1h ago</time>
-                        </div>
-                    </div>
-
-                    <button class="post-menu-button"
-                        aria-label="Post options"
-                        aria-expanded="false">
-                        •••
-                    </button>
-
-                    <div class="post-menu" hidden>
-                        <button class="edit-post" hidden>Edit post</button>
-                        <button class="delete-post" hidden>Delete post</button>
-                        <button class="report-post">Report post</button>
-                    </div>
-                </div>
-
-                <p class="post-content">
-                    Try study breaks in between. They help a lot.
-                </p>
-
-                <div class="post-actions">
-                    <button class="like-button"
-                        aria-label="Like post" aria-pressed="false">
-                        <span class="heart-icon" aria-hidden="true">♥</span>
-                        <span class="like-count">12</span>
-                    </button>
-
-                    <button class="comment-button"
-                        aria-label="Reply to post">
-                        <svg viewBox="0 0 48 48" aria-hidden="true">
-                            <path d="M5 7 H43 V34 H25 L14 44 V34 H5 Z"
-                                fill="currentColor"
-                                stroke="currentColor"
-                                stroke-linejoin="round"/>
-                        </svg>
-                        <span>Reply</span>
-                    </button>
-
-                    <button class="bookmark-button"
-                        aria-label="Bookmark post"
-                        aria-pressed="false">
-                        <svg viewBox="0 0 40 48" aria-hidden="true">
-                            <path d="M5 3 H35 V44 L20 29 L5 44 Z"
-                                fill="none" stroke="currentColor"
-                                stroke-width="2"/>
-                        </svg>
-                    </button>
-                </div>
-                
-                <div class="comments-section" hidden>
-                    <div class="comments-list">
-                        <p class="existing-comment">
-                            <strong>StudyBuddy:</strong>
-                            Taking short breaks between study sessions
-                            can help you stay focused.
-                        </p>
-                    </div>
-
-                    <form class="comment-form">
-                        <label for="comment-input-2">Add a comment</label>
-                        <textarea
-                            id="comment-input-2"
-                            class="comment-input"
-                            placeholder="Share a supportive response..."
-                            rows="2"
-                            required></textarea>
-
-                        <button type="submit" class="submit-comment">
-                            Comment
-                        </button>
-                    </form>
-                </div>
-            </article>
-
         </section>
 
         <!-- Floating create-post button -->
@@ -246,9 +74,14 @@
             <span aria-hidden="true">+</span>
         </button>
 
+        <button type="button" id="logoutButton" class="logout-button">
+         Logout
+        </button>
+
     </main>
         <script src="../js/posts.js"></script>
         <script src="../js/auth.js"></script>
+        <script src="../js/theme.js"></script>
 
 </body>
 </html>

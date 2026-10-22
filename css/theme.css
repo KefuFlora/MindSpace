@@ -1,0 +1,298 @@
+
+/* MindSpace shared dark mode */
+
+body {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode {
+    --feed-background: #171717;
+    --feed-text: #f5f5f5;
+    --feed-divider: #3c3c3c;
+    --feed-muted: #b5b5b5;
+    --feed-purple: #8c9eff;
+    --feed-pink: #ff668f;
+    --feed-white: #f5f5f5;
+
+    background: #171717 !important;
+    color: #f5f5f5;
+}
+
+/* Common page surfaces */
+body.dark-mode .profile-header,
+body.dark-mode .profile-stats div,
+body.dark-mode .activity-card,
+body.dark-mode .empty-activity,
+body.dark-mode #profileForm,
+body.dark-mode .post,
+body.dark-mode .notification-card,
+body.dark-mode .notification-item,
+body.dark-mode .form-container,
+body.dark-mode .auth-container,
+body.dark-mode .create-post-container,
+body.dark-mode .report-container {
+    background-color: #222 !important;
+    color: #f5f5f5;
+}
+
+/* Common text */
+body.dark-mode p,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode label,
+body.dark-mode span,
+body.dark-mode li {
+    color: inherit;
+}
+
+/* Forms */
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    background: #2b2b2b;
+    color: #f5f5f5;
+    border-color: #555;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: #b5b5b5;
+}
+
+/* Links and navigation */
+body.dark-mode a:not(.notifications-link):not(.profile-link) {
+    color: #c5b4ff;
+}
+
+body.dark-mode .notifications-link,
+body.dark-mode .profile-link,
+body.dark-mode .logout-button {
+    background: #2b2b2b;
+    color: #f5f5f5;
+    border-color: #555;
+}
+
+/* Buttons */
+body.dark-mode button {
+    color: inherit;
+}
+
+body.dark-mode .profile-tabs button.active {
+    background: #383044;
+    color: #e5d5ff;
+}
+
+body.dark-mode .back-link,
+body.dark-mode .activity-meta,
+body.dark-mode .profile-info p,
+body.dark-mode .profile-stats span {
+    color: #b5b5b5;
+}
+
+/* Theme switch */
+.theme-toggle-container {
+    display: inline-flex;
+    flex: 0 0 52px;
+    align-items: center;
+    width: 52px;
+    height: 28px;
+}
+
+#themeToggle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.theme-toggle-label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 52px;
+    height: 28px;
+    padding: 3px 6px;
+    border: 1px solid #777;
+    border-radius: 20px;
+    background: #b8b8b8;
+    cursor: pointer;
+}
+
+.toggle-sun,
+.toggle-moon {
+    z-index: 1;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.toggle-knob {
+    position: absolute;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border: 1px solid #777;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s ease;
+}
+
+#themeToggle:checked + .theme-toggle-label {
+    background: #596acb;
+}
+
+#themeToggle:checked + .theme-toggle-label .toggle-knob {
+    transform: translateX(24px);
+}
+
+#themeToggle:focus-visible + .theme-toggle-label {
+    outline: 2px solid #8c9eff;
+    outline-offset: 3px;
+}
+
+
+/* Fix dark mode backgrounds on remaining pages */
+
+/* Create post page */
+body.dark-mode .create-post-container,
+body.dark-mode .create-post-form,
+body.dark-mode .create-post-card,
+body.dark-mode .create-post-content {
+    background-color: #222 !important;
+    color: #f5f5f5 !important;
+}
+
+/* Notifications page */
+body.dark-mode .notifications-container,
+body.dark-mode .notifications-list,
+body.dark-mode .notification-card,
+body.dark-mode .notification-item,
+body.dark-mode .notification {
+    background-color: #181717 !important;
+    color: #f5f5f5 !important;
+}
+
+/* Report post page */
+body.dark-mode .report-container,
+body.dark-mode .report-form,
+body.dark-mode .report-card,
+body.dark-mode .report-content {
+    background-color: #222 !important;
+    color: #f5f5f5 !important;
+}
+
+/* Ensure the whole page background changes */
+body.dark-mode .create-post-page,
+body.dark-mode .notifications-page,
+body.dark-mode .report-post-page,
+body.dark-mode main,
+body.dark-mode section {
+    background-color: #171717;
+    color: #f5f5f5;
+}
+
+/* Fix notifications header in dark mode */
+body.dark-mode .notifications-header {
+    background-color: #222 !important;
+    color: #f5f5f5 !important;
+}
+
+/* Fix create-post content in dark mode */
+body.dark-mode .create-post-screen,
+body.dark-mode .create-post-header,
+body.dark-mode #createPostForm,
+body.dark-mode .topic-field,
+body.dark-mode .post-content-field,
+body.dark-mode .sensitivity-setting,
+body.dark-mode .warning-details,
+body.dark-mode .safety-reminder {
+    background-color: #222 !important;
+    color: #f5f5f5 !important;
+}
+
+/* Replace purple accents with navy blue in dark mode */
+body.dark-mode {
+    --feed-purple: #00018d;
+    --feed-pink: #00018d;
+}
+
+body.dark-mode a,
+body.dark-mode button,
+body.dark-mode .profile-tabs button.active,
+body.dark-mode .notifications-link,
+body.dark-mode .profile-link {
+    border-color: #00018d;
+}
+
+/* Purple backgrounds and accents */
+body.dark-mode .profile-tabs button.active,
+body.dark-mode button.active,
+body.dark-mode .active,
+body.dark-mode .theme-accent {
+    background-color: #00018d !important;
+    color: #ffffff !important;
+}
+
+/* Purple text, icons and borders */
+body.dark-mode .accent,
+body.dark-mode .purple-text,
+body.dark-mode .toggle-sun,
+body.dark-mode .toggle-moon {
+    color: #00018d !important;
+}
+
+/* Create post and edit post buttons */
+body.dark-mode button[type="submit"],
+body.dark-mode .create-post-form button,
+body.dark-mode .edit-post-form button {
+    background-color: #00018d !important;
+    border-color: #00018d !important;
+    color: #ffffff !important;
+}
+
+/* Profile: edit profile and save changes */
+body.dark-mode #profileForm button,
+body.dark-mode .profile-header button {
+    background-color: #00018d !important;
+    border-color: #00018d !important;
+    color: #ffffff !important;
+}
+
+/* Profile: delete posts and comments */
+body.dark-mode .delete-post,
+body.dark-mode .delete-comment,
+body.dark-mode button.delete-button,
+body.dark-mode .delete-btn {
+    background-color: #00018d !important;
+    border-color: #00018d !important;
+    color: #ffffff !important;
+}
+
+/* Profile post and comment actions in dark mode */
+body.dark-mode .activity-card button,
+body.dark-mode .activity-card a,
+
+/* Profile: delete posts and comments */
+body.dark-mode .activity-card .delete-post,
+body.dark-mode .activity-card .delete-comment,
+body.dark-mode button.delete-button,
+body.dark-mode .delete-btn {
+    background-color: #00018d !important;
+    border-color: #00018d !important;
+    color: #ffffff !important;
+}
+
+/* Keep feed menu options neutral */
+body.dark-mode .post-menu .delete-post {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: inherit !important;
+}
+
+/* Restore hover effect for feed menu options in dark mode */
+body.dark-mode .post-menu .delete-post:hover {
+    background-color: rgb(255 255 255 / 8%) !important;
+    color: inherit !important;
+}

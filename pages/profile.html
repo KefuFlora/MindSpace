@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | MindSpace</title>
+    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../css/posts.css">
+    <link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+    <main class="profile-container">
+        <a href="posts.html" class="back-link">← Back to Feed</a>
+
+        <div class="theme-toggle-container">
+    <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
+    <label for="themeToggle" class="theme-toggle-label">
+        <span class="toggle-sun">☀</span>
+        <span class="toggle-moon">☾</span>
+        <span class="toggle-knob"></span>
+    </label>
+</div>
+
+        <section class="profile-header">
+            <div class="profile-avatar" aria-hidden="true">✿</div>
+            <div class="profile-info">
+                <h1 id="displayUsername">Your username</h1>
+                <p id="displayBio">Tell the community about yourself.</p>
+                <p id="displayInterests"></p>
+                <button type="button" id="editProfileButton">
+                    Change username / Edit profile
+                </button>
+            </div>
+        </section>
+
+        <form id="profileForm" hidden>
+            <label for="username">Username</label>
+            <input id="username" type="text" maxlength="30" required>
+
+            <label for="bio">Bio</label>
+            <textarea id="bio" maxlength="250"></textarea>
+
+            <label for="interests">Interests</label>
+            <input id="interests" type="text"
+                   placeholder="e.g. Academics, stress management">
+
+            <button type="submit">Save changes</button>
+            <button type="button" id="cancelEditButton">Cancel</button>
+            <p id="profileMessage" role="status"></p>
+        </form>
+
+        <section class="profile-stats">
+            <div><strong id="postCount">0</strong><span>Posts</span></div>
+            <div><strong id="commentCount">0</strong><span>Comments</span></div>
+            <div><strong id="likeCount">0</strong><span>Liked posts</span></div>
+            <div><strong id="bookmarkCount">0</strong><span>Saved posts</span></div>
+        </section>
+
+        <nav class="profile-tabs" aria-label="Profile activity">
+            <button type="button" data-tab="posts" class="active">My posts</button>
+            <button type="button" data-tab="comments">Comments</button>
+            <button type="button" data-tab="liked">Liked</button>
+            <button type="button" data-tab="saved">Saved</button>
+        </nav>
+
+        <section id="activityList" class="activity-list"
+                 aria-live="polite"></section>
+    </main>
+
+    <script src="../js/profile.js"></script>
+    <script src="../js/theme.js"></script>
+</body>
+</html>

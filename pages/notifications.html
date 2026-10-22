@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications | MindSpace</title>
     <link rel="stylesheet" href="../css/notifications.css">
+    <link rel="stylesheet" href="../css/theme.css">
     <script src="../js/notifications.js" defer></script>
 </head>
 <body>
@@ -19,6 +20,15 @@
                  alt="MindSpace logo">
             <span>MindSpace</span>
         </a>
+
+        <div class="theme-toggle-container">
+    <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
+    <label for="themeToggle" class="theme-toggle-label">
+        <span class="toggle-sun">☀</span>
+        <span class="toggle-moon">☾</span>
+        <span class="toggle-knob"></span>
+    </label>
+</div>
     </header>
 
     <main class="notifications-container">
@@ -61,5 +71,8 @@
 
         <p id="pageMessage" class="page-message" role="status"></p>
     </main>
+
+    <script src="../js/theme.js"></script>
+
 </body>
 </html>

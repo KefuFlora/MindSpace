@@ -1,5 +1,5 @@
 
-/* MindSpace Feed — based on the supplied Feed mockup */
+/* MindSpace Feed */
 
 :root {
     --feed-background: #d9d9d9;
@@ -41,12 +41,13 @@ button:focus-visible {
     background: var(--feed-background);
 }
 
-/* Topic header */
+/* Header */
 
 .feed-header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 28px;
+    gap: 16px;
     min-height: 210px;
     padding: 28px 38px;
     border-bottom: 3px solid var(--feed-divider);
@@ -69,13 +70,107 @@ button:focus-visible {
 }
 
 .feed-header h1 {
+    flex: 1 1 220px;
+    min-width: 0;
     margin: 0;
     font-size: clamp(30px, 6.5vw, 64px);
     font-weight: 700;
     line-height: 1.15;
+    overflow-wrap: anywhere;
 }
 
-/* Top and Following tabs */
+/* Header links */
+
+.notifications-link,
+.profile-link,
+.logout-button {
+    display: inline-block;
+    flex: 0 0 auto;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #d197dd;
+    color: #26222a;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.notifications-link {
+    margin-left: auto;
+}
+
+.notifications-link:hover,
+.profile-link:hover,
+.logout-button:hover {
+    opacity: 0.85;
+}
+
+/* Theme toggle */
+
+.theme-toggle-container {
+    display: inline-flex;
+    flex: 0 0 52px;
+    align-items: center;
+    width: 52px;
+    height: 28px;
+    margin: 0;
+}
+
+#themeToggle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.theme-toggle-label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 52px;
+    height: 28px;
+    padding: 3px 6px;
+    border-radius: 20px;
+    background: #ccc;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.toggle-sun,
+.toggle-moon {
+    z-index: 1;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.toggle-knob {
+    position: absolute;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: white;
+    transition: transform 0.2s ease;
+}
+
+#themeToggle:checked + .theme-toggle-label {
+    background: #8c9eff;
+}
+
+#themeToggle:checked + .theme-toggle-label .toggle-knob {
+    transform: translateX(24px);
+}
+
+#themeToggle:focus-visible + .theme-toggle-label {
+    outline: 2px solid var(--feed-purple);
+    outline-offset: 3px;
+}
+
+/* Feed tabs */
 
 .feed-tabs {
     display: grid;
@@ -110,10 +205,12 @@ button:focus-visible {
 
 .feed-posts {
     width: 100%;
+    min-width: 0;
 }
 
 .post {
     position: relative;
+    min-width: 0;
     padding: 115px 38px 0;
     border-bottom: 3px solid var(--feed-divider);
 }
@@ -155,8 +252,8 @@ button:focus-visible {
 }
 
 .author-details h2 {
-    overflow-wrap: anywhere;
     margin: 0 0 5px;
+    overflow-wrap: anywhere;
     font-size: clamp(22px, 5.8vw, 54px);
     font-weight: 700;
     line-height: 1.12;
@@ -180,9 +277,9 @@ button:focus-visible {
 
 .post-content {
     margin: 55px 0 30px;
+    overflow-wrap: anywhere;
     font-size: clamp(19px, 4.3vw, 38px);
     line-height: 1.45;
-    overflow-wrap: anywhere;
 }
 
 /* Like, comment and bookmark row */
@@ -254,14 +351,26 @@ button:focus-visible {
 .post-menu button {
     padding: 12px;
     border: 0;
+    border-radius: 6px;
     background: transparent;
+    color: var(--feed-text);
     text-align: left;
+    outline: none;
+    box-shadow: none;
 }
 
 .post-menu button:hover {
     background: rgb(0 0 0 / 6%);
 }
 
+.post-menu button:focus {
+    background: transparent;
+    box-shadow: none;
+}
+
+body.dark-mode .post-menu button:hover {
+    background: rgb(255 255 255 / 8%);
+}
 /* Floating create-post button */
 
 .create-post-button {
@@ -289,12 +398,28 @@ button:focus-visible {
     line-height: 1;
 }
 
-/* Smaller screens */
+/* Dark mode */
+
+body.dark-mode {
+    --feed-background: #171717;
+    --feed-text: #f5f5f5;
+    --feed-divider: #3c3c3c;
+    --feed-muted: #a6a6a6;
+    --feed-purple: #00018d;
+    --feed-pink: #f04478;
+    --feed-white: #f5f5f5;
+}
+
+body.dark-mode .post-menu button:hover {
+    background: rgb(255 255 255 / 8%);
+}
+
+/* Responsive layout */
 
 @media (max-width: 600px) {
     .feed-header {
         min-height: 105px;
-        gap: 12px;
+        gap: 10px;
         padding: 18px 16px;
     }
 
@@ -302,6 +427,15 @@ button:focus-visible {
         flex-basis: 42px;
         width: 42px;
         height: 42px;
+    }
+
+    .feed-header h1 {
+        flex-basis: 150px;
+        font-size: clamp(24px, 7vw, 36px);
+    }
+
+    .notifications-link {
+        margin-left: 0;
     }
 
     .feed-tabs {
@@ -356,50 +490,43 @@ button:focus-visible {
     }
 }
 
-/* Dark mode foundation for later theme-toggle functionality */
-
-body.dark-mode {
-    --feed-background: #171717;
-    --feed-text: #f5f5f5;
-    --feed-divider: #3c3c3c;
-    --feed-muted: #a6a6a6;
-    --feed-purple: #8c9eff;
-    --feed-pink: #f04478;
-    --feed-white: #f5f5f5;
+/* Header controls in dark mode */
+body.dark-mode .notifications-link,
+body.dark-mode .profile-link,
+body.dark-mode .logout-button {
+    background: #00018d;
+    color: #f5f5f5;
+    border: 1px solid #555;
 }
 
-body.dark-mode .post-menu button:hover {
-    background: rgb(255 255 255 / 8%);
+body.dark-mode .notifications-link:hover,
+body.dark-mode .profile-link:hover,
+body.dark-mode .logout-button:hover {
+    background: #3c3c3c;
 }
 
-
-.notifications-link {
-    margin-left: auto;
-    padding: 8px 12px;
-    border-radius: 8px;
-    background: #d197dd;
-    color: #26222a;
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    white-space: nowrap;
+/* Make the theme toggle visible in light mode */
+.theme-toggle-label {
+    background: #b8b8b8;
+    border: 1px solid #777;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
 }
 
-.notifications-link:hover {
-    opacity: 0.85;
+.theme-toggle-label .toggle-knob {
+    background: #ffffff;
+    border: 1px solid #777;
 }
 
-.logout-button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 8px;
-    background: #d197dd;
-    color: #26222a;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
+#themeToggle:checked + .theme-toggle-label {
+    background: #111633;
 }
 
-.logout-button:hover {
-    opacity: 0.85;
+/* Clearer toggle in dark mode */
+body.dark-mode .theme-toggle-label {
+    background: #444;
+    border-color: #888;
+}
+
+body.dark-mode #themeToggle:checked + .theme-toggle-label {
+    background: #596acb;
 }

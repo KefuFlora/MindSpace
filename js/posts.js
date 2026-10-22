@@ -822,3 +822,4 @@ postsList.prepend(article);
 restoreBookmarks();
 
 });
+
