@@ -41,6 +41,7 @@ public class PostMapper {
         List<CommentResponse> comments =
             commentRepository.findByPost_IdOrderByCreatedAtAsc(post.getId())
                 .stream()
+                .filter(comment -> !"removed".equals(comment.getStatus()))
                 .map(comment -> CommentResponse.from(comment, currentUserId))
                 .toList();
 

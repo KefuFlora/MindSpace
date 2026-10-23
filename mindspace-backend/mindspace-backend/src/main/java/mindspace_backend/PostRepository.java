@@ -10,4 +10,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByAuthor_IdOrderByCreatedAtDesc(Long userId);
 
     long countByAuthor_Id(Long userId);
+
+        List<Post> findByStatusNotOrderByCreatedAtDesc(String status);
 }

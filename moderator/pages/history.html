@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MindSpace | Moderation History</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/moderator.css"
+    >
+        <link rel="stylesheet" href="../css/look.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navigation -->
+    <header class="dashboard-header">
+
+        <div class="brand">
+
+            <h1>MindSpace</h1>
+
+            <span>
+                Moderator Portal
+            </span>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <button
+                id="themeToggle"
+                class="theme-toggle"
+                type="button"
+            >
+                🌙 Dark Mode
+            </button>
+
+
+            <button
+                id="logoutButton"
+                class="logout-button"
+                type="button"
+                onclick="window.location.href='login.html'"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- Main Content -->
+    <main class="dashboard-container">
+
+
+        <!-- Page Heading -->
+        <section class="welcome-section">
+
+            <h2>
+                Moderation History
+            </h2>
+
+            <p>
+                View previous moderation decisions and actions.
+            </p>
+
+        </section>
+
+
+
+        <!-- Moderation History -->
+        <section class="history-section">
+
+
+            <!-- History Record 1 -->
+            <div class="history-card">
+
+                <div class="history-card-header">
+
+                    <div>
+
+                        <h3>
+                            Post #001
+                        </h3>
+
+                        <span class="status approved">
+                            Approved
+                        </span>
+
+                    </div>
+
+                    <span class="history-date">
+                        02 October 2026
+                    </span>
+
+                </div>
+
+
+                <div class="history-information">
+
+                    <p>
+                        <strong>Content Type:</strong>
+                        Post
+                    </p>
+
+                    <p>
+                        <strong>Action:</strong>
+                        Approved
+                    </p>
+
+                    <p>
+                        <strong>Moderator:</strong>
+                        Moderator
+                    </p>
+
+                    <p>
+                        <strong>Reason:</strong>
+                        Content did not violate community guidelines.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- History Record 2 -->
+            <div class="history-card">
+
+                <div class="history-card-header">
+
+                    <div>
+
+                        <h3>
+                            Comment #002
+                        </h3>
+
+                        <span class="status removed">
+                            Removed
+                        </span>
+
+                    </div>
+
+                    <span class="history-date">
+                        02 October 2026
+                    </span>
+
+                </div>
+
+
+                <div class="history-information">
+
+                    <p>
+                        <strong>Content Type:</strong>
+                        Comment
+                    </p>
+
+                    <p>
+                        <strong>Action:</strong>
+                        Removed
+                    </p>
+
+                    <p>
+                        <strong>Moderator:</strong>
+                        Moderator
+                    </p>
+
+                    <p>
+                        <strong>Reason:</strong>
+                        Content violated community guidelines.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- History Record 3 -->
+            <div class="history-card">
+
+                <div class="history-card-header">
+
+                    <div>
+
+                        <h3>
+                            Post #003
+                        </h3>
+
+                        <span class="status removed">
+                            Removed
+                        </span>
+
+                    </div>
+
+                    <span class="history-date">
+                        01 October 2026
+                    </span>
+
+                </div>
+
+
+                <div class="history-information">
+
+                    <p>
+                        <strong>Content Type:</strong>
+                        Post
+                    </p>
+
+                    <p>
+                        <strong>Action:</strong>
+                        Removed
+                    </p>
+
+                    <p>
+                        <strong>Moderator:</strong>
+                        Moderator
+                    </p>
+
+                    <p>
+                        <strong>Reason:</strong>
+                        Reported content was found to violate
+                        moderation guidelines.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- Back to Dashboard -->
+        <div class="back-link-container">
+
+            <a href="dashboard.html">
+                ← Back to Dashboard
+            </a>
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- JavaScript -->
+    <script src="../js/theme.js"></script>
+        <script src="../js/staff.js"></script>
+    <script src="../js/history.js"></script>
+
+</body>
+
+</html>

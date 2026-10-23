@@ -1,0 +1,83 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap");
+
+/* MindSpace shared look: matches the admin dashboard.
+   Load this LAST on every member page. Colours, fonts and buttons only. */
+
+body,
+button,
+input,
+select,
+textarea {
+    font-family: "Nunito", system-ui, sans-serif;
+}
+
+body {
+    color: #1e0b3d;
+}
+
+/* Buttons */
+.notifications-link,
+.profile-link,
+.logout-button,
+.auth-button,
+.submit-post-button,
+.submit-report-button,
+.create-post-button,
+.follow-button {
+    border-radius: 999px;
+    font-weight: 800;
+}
+
+.notifications-link,
+.profile-link,
+.logout-button,
+.auth-button,
+.submit-post-button,
+.submit-report-button,
+.create-post-button {
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+/* Cards */
+.post,
+.notification-card,
+.activity-card,
+.profile-header,
+.form-container,
+.auth-container,
+.create-post-container,
+.report-container {
+    border: 2px solid #ecdcf0;
+    border-radius: 16px;
+}
+
+/* Inputs */
+input,
+select,
+textarea {
+    border-radius: 12px;
+}
+
+/* Dark mode: same black and lilac as the admin dashboard */
+body.dark-mode {
+    background: #000 !important;
+    color: #f6eaff;
+}
+
+body.dark-mode .profile-header,
+body.dark-mode .profile-stats div,
+body.dark-mode .activity-card,
+body.dark-mode .empty-activity,
+body.dark-mode #profileForm,
+body.dark-mode .post,
+body.dark-mode .notification-card,
+body.dark-mode .notification-item,
+body.dark-mode .form-container,
+body.dark-mode .auth-container,
+body.dark-mode .create-post-container,
+body.dark-mode .report-container {
+    background-color: #000 !important;
+    border-color: #2d2347;
+    color: #f6eaff;
+}

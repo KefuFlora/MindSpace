@@ -3,14 +3,41 @@ package mindspace_backend;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
 
-    public NotificationService(NotificationRepository notificationRepository) {
+    public NotificationService(
+        NotificationRepository notificationRepository,
+        UserRepository userRepository
+    ) {
         this.notificationRepository = notificationRepository;
+        this.userRepository = userRepository;
+    }
+
+    // Tells a member that a moderator acted on something they wrote.
+    public void notifyModeration(User recipient, String title, String message) {
+        save(recipient, null, "moderation", title, message, null);
+    }
+
+    // Tells every active moderator and admin that content needs review.
+    public void notifyStaffFlagged(String message) {
+        List<User> staff =
+            userRepository.findByRoleInAndActiveTrue(List.of("moderator", "admin"));
+
+        for (User member : staff) {
+            if (member.isNotifyFlagged()) {
+                save(member, null, "moderation", "New flagged content", message, null);
+            }
+        }
+    }
+
+    private String cut(String text, int max) {
+        return text.length() <= max ? text : text.substring(0, max);
     }
 
     // Tells a post's author that someone liked it. Never notifies yourself.
@@ -69,10 +96,10 @@ public class NotificationService {
     ) {
         Notification notification = new Notification();
         notification.setRecipient(recipient);
-        notification.setActorId(actor.getId());
+        notification.setActorId(actor == null ? null : actor.getId());
         notification.setType(type);
-        notification.setTitle(title);
-        notification.setMessage(message);
+        notification.setTitle(cut(title, 120));
+        notification.setMessage(cut(message, 300));
         notification.setPostId(postId);
         notification.setCreatedAt(LocalDateTime.now());
         notification.setRead(false);

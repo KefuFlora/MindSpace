@@ -1,0 +1,89 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap");
+
+/* MindSpace shared look: matches the admin dashboard.
+   Load this LAST on every moderator page. */
+
+:root {
+    --background: #d9d9d9;
+    --card-background: #ffffff;
+    --header-background: #d197dd;
+    --primary-blue: #d197dd;
+    --primary-blue-hover: #b879c5;
+
+    --heading-text: #1e0b3d;
+    --body-text: #1e0b3d;
+    --secondary-text: #6b5b86;
+    --muted-text: #6b5b86;
+
+    --border: #ecdcf0;
+    --input-border: #ecdcf0;
+    --input-background: #ffffff;
+    --reported-background: #fde3f8;
+
+    --login-button-background: #d197dd;
+    --login-button-hover: #b879c5;
+}
+
+body.dark-mode {
+    --background: #000000;
+    --card-background: #000000;
+    --header-background: #000000;
+    --primary-blue: #9595e4;
+    --primary-blue-hover: #ababdb;
+
+    --heading-text: #f6eaff;
+    --body-text: #f6eaff;
+    --secondary-text: #b9a5d6;
+    --muted-text: #b9a5d6;
+
+    --border: #2d2347;
+    --input-border: #2d2347;
+    --input-background: #000000;
+    --reported-background: #0d0820;
+
+    --login-button-background: #9595e4;
+    --login-button-hover: #ababdb;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+    font-family: "Nunito", system-ui, sans-serif;
+}
+
+/* Light header is lilac, so use dark text on it */
+.dashboard-header,
+.dashboard-header * {
+    color: #1e0b3d;
+}
+
+body.dark-mode .dashboard-header,
+body.dark-mode .dashboard-header * {
+    color: #f6eaff;
+}
+
+/* Pill buttons and rounded cards, like the admin dashboard */
+.approve-button,
+.remove-button,
+.review-button,
+.login-button,
+.logout-button,
+.return-button,
+.back-button,
+.cancel-button {
+    border-radius: 999px;
+    font-weight: 800;
+}
+
+.flagged-card,
+.history-card,
+.notification-card,
+.menu-card,
+.stat-card,
+.review-card,
+.reported-post-card,
+.login-card {
+    border-radius: 16px;
+}

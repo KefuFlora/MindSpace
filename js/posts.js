@@ -325,6 +325,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add, edit and delete comments. Everything is saved in MySQL.
     const COMMENTS_API = "http://127.0.0.1:8080/api/comments";
+        const REPORTS_API = "http://127.0.0.1:8080/api/reports";
 
     // Send a request to the backend and return its JSON reply.
     async function requestJson(url, options = {}) {
@@ -384,6 +385,18 @@ document.addEventListener("DOMContentLoaded", () => {
             deleteCommentButton.textContent = "Delete";
 
             commentActions.append(editCommentButton, deleteCommentButton);
+            comment.appendChild(commentActions);
+        } else {
+            // Other people's comments can be reported.
+            const commentActions = document.createElement("div");
+            commentActions.className = "comment-actions";
+
+            const reportCommentButton = document.createElement("button");
+            reportCommentButton.type = "button";
+            reportCommentButton.className = "report-comment";
+            reportCommentButton.textContent = "Report";
+
+            commentActions.append(reportCommentButton);
             comment.appendChild(commentActions);
         }
 
@@ -527,6 +540,53 @@ document.addEventListener("DOMContentLoaded", () => {
                 error.message ||
                     "Could not delete your comment. Please try again."
             );
+        }
+    });
+
+    // Report someone else's comment.
+    postsList.addEventListener("click", async (event) => {
+        const reportButton = event.target.closest(".report-comment");
+        if (!reportButton || reportButton.disabled) return;
+
+        const commentElement = reportButton.closest(".existing-comment");
+        if (!commentElement) return;
+
+        const reason = window.prompt(
+            "Why are you reporting this comment? (for example: Harassment, Spam, Harmful content)"
+        );
+
+        if (reason === null) return;
+
+        const trimmedReason = reason.trim();
+
+        if (!trimmedReason) {
+            window.alert("Please enter a reason for your report.");
+            return;
+        }
+
+        reportButton.disabled = true;
+
+        try {
+            const data = await requestJson(REPORTS_API, {
+                method: "POST",
+                body: JSON.stringify({
+                    type: "comment",
+                    id: Number(commentElement.dataset.commentId),
+                    reason: trimmedReason.slice(0, 100)
+                })
+            });
+
+            window.alert(
+                data.message || "Thank you. Your report has been submitted."
+            );
+        } catch (error) {
+            console.error("Could not report comment:", error);
+            window.alert(
+                error.message ||
+                    "Could not send your report. Please try again."
+            );
+        } finally {
+            reportButton.disabled = false;
         }
     });
 

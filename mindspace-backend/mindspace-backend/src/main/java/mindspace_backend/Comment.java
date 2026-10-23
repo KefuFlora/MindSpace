@@ -25,6 +25,16 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+        // "approved" (live), "flagged" (waiting for review) or "removed"
+    @Column(
+        nullable = false,
+        columnDefinition = "VARCHAR(10) NOT NULL DEFAULT 'approved'"
+    )
+    private String status = "approved";
+
+    @Column(name = "flag_reason", length = 200)
+    private String flagReason;
+
     public Comment() {
     }
 
@@ -62,5 +72,25 @@ public class Comment {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+        public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getFlagReason() {
+        return flagReason;
+    }
+
+    public void setFlagReason(String flagReason) {
+        this.flagReason = flagReason;
+    }
+
+    public boolean isRemoved() {
+        return "removed".equals(status);
     }
 }

@@ -165,6 +165,7 @@ public class ProfileController {
         List<PostResponse> posts =
             postRepository.findByAuthor_IdOrderByCreatedAtDesc(userId)
                 .stream()
+                .filter(post -> !post.isRemoved())
                 .map(post -> postMapper.toResponse(post, userId))
                 .toList();
 
@@ -182,6 +183,8 @@ public class ProfileController {
         List<ProfileCommentResponse> comments =
             commentRepository.findByAuthor_IdOrderByCreatedAtDesc(user.getId())
                 .stream()
+                .filter(comment -> !"removed".equals(comment.getStatus()))
+                .filter(comment -> !comment.getPost().isRemoved())
                 .map(comment -> new ProfileCommentResponse(
                     comment.getId(),
                     comment.getContent(),
@@ -207,6 +210,7 @@ public class ProfileController {
         List<PostResponse> posts =
             postLikeRepository.findByUser_IdOrderByIdDesc(userId)
                 .stream()
+                .filter(like -> !like.getPost().isRemoved())
                 .map(like -> postMapper.toResponse(like.getPost(), userId))
                 .toList();
 
@@ -226,6 +230,7 @@ public class ProfileController {
         List<PostResponse> posts =
             bookmarkRepository.findByUser_IdOrderByIdDesc(userId)
                 .stream()
+                .filter(bookmark -> !bookmark.getPost().isRemoved())
                 .map(bookmark -> postMapper.toResponse(bookmark.getPost(), userId))
                 .toList();
 

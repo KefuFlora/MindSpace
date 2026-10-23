@@ -1,4 +1,3 @@
-
 package mindspace_backend;
 
 import jakarta.validation.Valid;
@@ -25,16 +24,26 @@ import java.util.Map;
 public class AuthController {
 
     private final UserRepository userRepository;
+    private final SettingsService settingsService;
     private final BCryptPasswordEncoder passwordEncoder =
             new BCryptPasswordEncoder();
 
-    public AuthController(UserRepository userRepository) {
+    public AuthController(
+            UserRepository userRepository,
+            SettingsService settingsService) {
         this.userRepository = userRepository;
+        this.settingsService = settingsService;
     }
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(
             @Valid @RequestBody RegisterRequest request) {
+
+        if (!settingsService.isSignupsAllowed()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message",
+                            "New sign-ups are turned off right now."));
+        }
 
         String username = request.getUsername().trim();
         String email = request.getEmail().trim().toLowerCase();
@@ -60,65 +69,77 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Map.of("message", "Account created successfully"));
     }
-    
-@PostMapping("/login")
-public ResponseEntity<Map<String, String>> login(
-        @Valid @RequestBody LoginRequest request,
-        HttpSession session) {
 
-    String email = request.getEmail().trim().toLowerCase();
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> login(
+            @Valid @RequestBody LoginRequest request,
+            HttpSession session) {
 
-    var userOptional = userRepository.findByEmail(email);
+        String email = request.getEmail().trim().toLowerCase();
 
-    if (userOptional.isEmpty()
-            || !passwordEncoder.matches(
-                    request.getPassword(),
-                    userOptional.get().getPasswordHash())) {
+        var userOptional = userRepository.findByEmail(email);
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("message", "Invalid email or password"));
+        if (userOptional.isEmpty()
+                || !passwordEncoder.matches(
+                        request.getPassword(),
+                        userOptional.get().getPasswordHash())) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Invalid email or password"));
+        }
+
+        User user = userOptional.get();
+
+        if (!user.isActive()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "This account is turned off."));
+        }
+
+        if (settingsService.isMaintenanceMode()
+                && "user".equals(user.getRole())) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(Map.of("message",
+                            "MindSpace is down for maintenance. Please try again later."));
+        }
+
+        session.setAttribute("userId", user.getId());
+        session.setAttribute("username", user.getUsername());
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "message", "Login successful",
+                        "username", user.getUsername(),
+                        "role", user.getRole()
+                )
+        );
     }
 
-    User user = userOptional.get();
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, String>> getCurrentUser(
+            HttpSession session) {
 
-    session.setAttribute("userId", user.getId());
-    session.setAttribute("username", user.getUsername());
+        Object userId = session.getAttribute("userId");
+        Object username = session.getAttribute("username");
 
-    return ResponseEntity.ok(
-            Map.of(
-                    "message", "Login successful",
-                    "username", user.getUsername()
-            )
-    );
-}
+        if (userId == null || username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Not logged in"));
+        }
 
-@GetMapping("/me")
-public ResponseEntity<Map<String, String>> getCurrentUser(
-        HttpSession session) {
-
-    Object userId = session.getAttribute("userId");
-    Object username = session.getAttribute("username");
-
-    if (userId == null || username == null) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("message", "Not logged in"));
+        return ResponseEntity.ok(
+                Map.of("username", username.toString())
+        );
     }
 
-    return ResponseEntity.ok(
-            Map.of("username", username.toString())
-    );
-}
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, String>> logout(
+            HttpSession session) {
 
-@PostMapping("/logout")
-public ResponseEntity<Map<String, String>> logout(
-        HttpSession session) {
+        session.invalidate();
 
-    session.invalidate();
-
-    return ResponseEntity.ok(
-            Map.of("message", "Logout successful")
-    );
-}
-
+        return ResponseEntity.ok(
+                Map.of("message", "Logout successful")
+        );
+    }
 
 }

@@ -26,6 +26,7 @@ public class PostController {
     private final PostMapper postMapper;
     private final NotificationRepository notificationRepository;
     private final NotificationService notificationService;
+        private final SettingsService settingsService;
 
     public PostController(
         PostRepository postRepository,
@@ -35,7 +36,8 @@ public class PostController {
         BookmarkRepository bookmarkRepository,
         PostMapper postMapper,
         NotificationRepository notificationRepository,
-        NotificationService notificationService
+        NotificationService notificationService,
+        SettingsService settingsService
     ) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
@@ -45,6 +47,7 @@ public class PostController {
         this.postMapper = postMapper;
         this.notificationRepository = notificationRepository;
         this.notificationService = notificationService;
+        this.settingsService = settingsService;
     }
     
 
@@ -77,7 +80,7 @@ public class PostController {
         }
 
         List<PostResponse> posts =
-            postRepository.findAllByOrderByCreatedAtDesc()
+           postRepository.findByStatusNotOrderByCreatedAtDesc("removed")
                 .stream()
                 .map(post -> postMapper.toResponse(post, userId))
                 .toList();
@@ -119,7 +122,21 @@ public class PostController {
         post.setTriggerWarning(hasWarning ? warning.trim() : null);
         post.setCreatedAt(LocalDateTime.now());
 
+        String flaggedWord = settingsService.findFlaggedWord(post.getContent());
+
+        if (flaggedWord != null) {
+            post.setStatus("flagged");
+            post.setFlagReason("Auto-flagged: " + flaggedWord);
+        }
+
         Post savedPost = postRepository.save(post);
+
+        if (flaggedWord != null) {
+            notificationService.notifyStaffFlagged(
+                "A new post was automatically flagged for the word \""
+                    + flaggedWord + "\"."
+            );
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(postMapper.toResponse(savedPost, userId));
@@ -139,7 +156,7 @@ public class PostController {
 
         Post post = postRepository.findById(id).orElse(null);
 
-        if (post == null) {
+        if (post == null || post.isRemoved()) {
             return notFound();
         }
 
@@ -159,9 +176,25 @@ public class PostController {
         post.setTopic(request.getTopic());
         post.setContent(request.getContent().trim());
         post.setHasTriggerWarning(hasWarning);
-        post.setTriggerWarning(hasWarning ? warning.trim() : null);
+          post.setTriggerWarning(hasWarning ? warning.trim() : null);
+
+        String flaggedWord = settingsService.findFlaggedWord(post.getContent());
+        boolean newlyFlagged =
+            flaggedWord != null && "approved".equals(post.getStatus());
+
+        if (newlyFlagged) {
+            post.setStatus("flagged");
+            post.setFlagReason("Auto-flagged: " + flaggedWord);
+        }
 
         Post savedPost = postRepository.save(post);
+
+        if (newlyFlagged) {
+            notificationService.notifyStaffFlagged(
+                "An edited post was automatically flagged for the word \""
+                    + flaggedWord + "\"."
+            );
+        }
 
         return ResponseEntity.ok(postMapper.toResponse(savedPost, userId));
     }
@@ -179,7 +212,7 @@ public class PostController {
 
         Post post = postRepository.findById(id).orElse(null);
 
-        if (post == null) {
+        if (post == null || post.isRemoved()) {
             return notFound();
         }
 
@@ -216,7 +249,7 @@ public class PostController {
 
         Post post = postRepository.findById(id).orElse(null);
 
-        if (post == null) {
+        if (post == null || post.isRemoved()) {
             return notFound();
         }
 
@@ -240,7 +273,7 @@ public class PostController {
 
         Post post = postRepository.findById(id).orElse(null);
 
-        if (post == null) {
+       if (post == null || post.isRemoved()) {
             return notFound();
         }
 
@@ -274,7 +307,7 @@ public class PostController {
 
         Post post = postRepository.findById(id).orElse(null);
 
-        if (post == null) {
+        if (post == null || post.isRemoved()) {
             return notFound();
         }
 
@@ -296,7 +329,7 @@ public class PostController {
 
         Post post = postRepository.findById(id).orElse(null);
 
-        if (post == null) {
+        if (post == null || post.isRemoved()) {
             return notFound();
         }
 

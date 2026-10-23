@@ -21,17 +21,20 @@ public class CommentController {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final SettingsService settingsService;
 
     public CommentController(
         CommentRepository commentRepository,
         PostRepository postRepository,
         UserRepository userRepository,
-        NotificationService notificationService
+        NotificationService notificationService,
+        SettingsService settingsService
     ) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.notificationService = notificationService;
+        this.settingsService = settingsService;
     }
 
     private Long getUserId(HttpSession session) {
@@ -73,7 +76,7 @@ public class CommentController {
 
         Post post = postRepository.findById(postId).orElse(null);
 
-        if (post == null) {
+        if (post == null || post.isRemoved()) {
             return postNotFound();
         }
 
@@ -90,8 +93,22 @@ public class CommentController {
         comment.setContent(request.getContent().trim());
         comment.setCreatedAt(LocalDateTime.now());
 
+        String flaggedWord = settingsService.findFlaggedWord(comment.getContent());
+
+        if (flaggedWord != null) {
+            comment.setStatus("flagged");
+            comment.setFlagReason("Auto-flagged: " + flaggedWord);
+        }
+
         Comment savedComment = commentRepository.save(comment);
         notificationService.notifyComment(post, author);
+
+        if (flaggedWord != null) {
+            notificationService.notifyStaffFlagged(
+                "A new comment was automatically flagged for the word \""
+                    + flaggedWord + "\"."
+            );
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED)
         .body(CommentResponse.from(savedComment, userId));
@@ -111,7 +128,7 @@ public class CommentController {
 
         Comment comment = commentRepository.findById(id).orElse(null);
 
-        if (comment == null) {
+       if (comment == null || "removed".equals(comment.getStatus())) {
             return commentNotFound();
         }
 
@@ -120,9 +137,25 @@ public class CommentController {
                 .body(Map.of("message", "You can only edit your own comments."));
         }
 
-        comment.setContent(request.getContent().trim());
+            comment.setContent(request.getContent().trim());
+
+        String flaggedWord = settingsService.findFlaggedWord(comment.getContent());
+        boolean newlyFlagged =
+            flaggedWord != null && "approved".equals(comment.getStatus());
+
+        if (newlyFlagged) {
+            comment.setStatus("flagged");
+            comment.setFlagReason("Auto-flagged: " + flaggedWord);
+        }
 
         Comment savedComment = commentRepository.save(comment);
+
+        if (newlyFlagged) {
+            notificationService.notifyStaffFlagged(
+                "An edited comment was automatically flagged for the word \""
+                    + flaggedWord + "\"."
+            );
+        }
 
         return ResponseEntity.ok(CommentResponse.from(savedComment, userId));
     }

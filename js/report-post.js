@@ -6,52 +6,58 @@ document.addEventListener("DOMContentLoaded", () => {
     const backButton = document.getElementById("backButton");
     const cancelButton = document.getElementById("cancelButton");
 
+    const API_BASE = "http://127.0.0.1:8080/api";
+
     const params = new URLSearchParams(window.location.search);
     const postId = params.get("postId");
 
-    // Find the selected post if it was saved in the browser.
-    function findPost() {
+    function disableForm() {
+        reportForm.querySelectorAll(
+            'input[name="reportReason"], textarea, button[type="submit"]'
+        ).forEach((element) => {
+            element.disabled = true;
+        });
+    }
+
+    // Show the post being reported, using the posts saved in MySQL.
+    async function loadPostPreview() {
+        if (!postId) {
+            reportedPostText.textContent =
+                "No post was selected. Return to the feed and choose a post to report.";
+            disableForm();
+            return;
+        }
+
         try {
-            const savedPosts = JSON.parse(
-                localStorage.getItem("mindspacePosts") || "[]"
-            );
+            const response = await fetch(`${API_BASE}/posts`, {
+                credentials: "include"
+            });
 
-            if (Array.isArray(savedPosts)) {
-                const savedPost = savedPosts.find(
-                    post => String(post.id) === String(postId)
-                );
+            if (response.status === 401) {
+                window.location.href = "login.html";
+                return;
+            }
 
-                if (savedPost) {
-                    return savedPost.content || "";
-                }
+            const posts = await response.json().catch(() => []);
+            const post = Array.isArray(posts)
+                ? posts.find((item) => String(item.id) === String(postId))
+                : null;
+
+            if (post && post.content) {
+                reportedPostText.textContent = post.content;
+            } else if (response.ok) {
+                reportedPostText.textContent =
+                    "This post is no longer available.";
+                disableForm();
+            } else {
+                reportedPostText.textContent =
+                    "The post could not be previewed, but you can still submit your report.";
             }
         } catch (error) {
             console.error("Could not load selected post:", error);
+            reportedPostText.textContent =
+                "The post could not be previewed, but you can still submit your report.";
         }
-
-        // Hardcoded demo posts are not stored in mindspacePosts.
-        const demoPost = document.querySelector(
-            `[data-post-id="${CSS.escape(String(postId || ""))}"]`
-        );
-
-        return demoPost
-            ? demoPost.querySelector(".post-content")?.textContent || ""
-            : "";
-    }
-
-    const postContent = findPost();
-
-    if (!postId) {
-        reportedPostText.textContent =
-            "No post was selected. Return to the feed and choose a post to report.";
-        reportForm.querySelectorAll("input, textarea, button[type='submit']")
-            .forEach(element => element.disabled = true);
-    } else if (postContent) {
-        reportedPostText.textContent = postContent;
-    } else {
-        reportedPostText.textContent =
-            "Selected post ID: " + postId +
-            ". The post content could not be previewed, but you can still submit your report.";
     }
 
     function returnToFeed() {
@@ -61,10 +67,10 @@ document.addEventListener("DOMContentLoaded", () => {
     backButton.addEventListener("click", returnToFeed);
     cancelButton.addEventListener("click", returnToFeed);
 
-    reportForm.addEventListener("submit", (event) => {
+    reportForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        if (!postId) {
+        if (!postId || Number.isNaN(Number(postId))) {
             reportMessage.textContent =
                 "Please return to the feed and select a post to report.";
             return;
@@ -80,46 +86,52 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const report = {
-            id: Date.now().toString(),
-            postId: postId,
-            reason: selectedReason.value,
-            details: reportDetails.value.trim(),
-            submittedAt: new Date().toISOString(),
-            status: "Pending"
-        };
+        const submitButton = reportForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        reportMessage.textContent = "Sending your report...";
 
         try {
-            const storedReports = JSON.parse(
-                localStorage.getItem("mindspaceReports") || "[]"
-            );
+            const response = await fetch(`${API_BASE}/reports`, {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    type: "post",
+                    id: Number(postId),
+                    reason: selectedReason.value,
+                    details: reportDetails.value.trim()
+                })
+            });
 
-            const reports = Array.isArray(storedReports)
-                ? storedReports
-                : [];
+            if (response.status === 401) {
+                window.location.href = "login.html";
+                return;
+            }
 
-            reports.push(report);
+            const data = await response.json().catch(() => ({}));
 
-            localStorage.setItem(
-                "mindspaceReports",
-                JSON.stringify(reports)
-            );
+            if (!response.ok) {
+                throw new Error(
+                    data.message ||
+                        "We couldn't send your report. Please try again."
+                );
+            }
 
             reportForm.reset();
             reportMessage.textContent =
+                data.message ||
                 "Thank you. Your report has been submitted for review.";
 
-            reportForm.querySelectorAll(
-                'input[name="reportReason"], textarea, button[type="submit"]'
-            ).forEach(element => {
-                element.disabled = true;
-            });
-
+            disableForm();
             cancelButton.textContent = "Return to Feed";
         } catch (error) {
-            console.error("Could not save report:", error);
+            console.error("Could not send report:", error);
             reportMessage.textContent =
-                "We couldn't save your report in this browser. Please try again.";
+                error.message ||
+                "We couldn't send your report. Please try again.";
+            submitButton.disabled = false;
         }
     });
+
+    loadPostPreview();
 });

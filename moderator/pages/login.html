@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MindSpace | Moderator Login</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/moderator.css"
+    >
+        <link rel="stylesheet" href="../css/look.css">
+</head>
+
+<body>
+
+    <!-- Theme Toggle -->
+    <button
+        id="themeToggle"
+        class="theme-toggle login-theme-toggle"
+        type="button"
+    >
+        🌙 Dark Mode
+    </button>
+
+    <!-- Login Page -->
+    <main class="login-container">
+
+        <section class="login-card">
+
+            <!-- MindSpace Logo -->
+            <div class-="login-logo-container">
+                <img
+                    src="../../logo/Student-friendly MindSpace logo (2).png"
+                    alt="MindSpace Logo"
+                    class="login-logo"
+
+                >
+
+        
+
+
+            </div>          
+                
+
+            <!-- Login Header -->
+            <div class="login-header">
+
+                <h1>MindSpace</h1>
+
+                <p>Moderator Portal</p>
+
+            </div>
+
+            <!-- Login Content -->
+            <div class="login-content">
+
+                <h2>Moderator Login</h2>
+
+                <p class="login-description">
+                    Sign in to access the MindSpace moderation system.
+                </p>
+
+                <!-- Login Form -->
+                <form id="loginForm">
+
+                    <!-- Email -->
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email address"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- Login Button -->
+                    <button
+                        type="submit"
+                        class="login-button"
+                    >
+                        Login
+                    </button>
+
+                    <!-- Login Message -->
+                    <p
+                        id="loginMessage"
+                        class="login-message"
+                        role="status"
+                        aria-live="polite"
+                    ></p>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- JavaScript -->
+    <script src="../js/theme.js"></script>
+    <script src="../js/auth.js"></script>
+
+</body>
+
+</html>
