@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Academic Stress - MindSpace</title>
+    <title>Community Feed - MindSpace</title>
 
     <link rel="stylesheet" href="../css/posts.css">
     <link rel="stylesheet" href="../css/theme.css">
@@ -26,11 +26,12 @@
                 </svg>
             </button>
 
-    <h1>Academic Stress</h1>
+    <h1>Community Feed</h1>
 
-    <a href="notifications.html" class="notifications-link"
+        <a href="notifications.html" class="notifications-link"
        aria-label="Notifications">
         🔔 Notifications
+        <span class="notification-badge" id="notificationBadge" hidden></span>
     </a>
 
     <a href="profile.html" class="profile-link">
@@ -51,8 +52,13 @@
 
 <!-- Feed tabs: outside the header -->
 <nav class="feed-tabs" aria-label="Feed options">
-    <button class="tab-button active"
-            data-feed="top" aria-pressed="true">
+        <button class="tab-button active"
+            data-feed="latest" aria-pressed="true">
+        Latest
+    </button>
+
+    <button class="tab-button"
+            data-feed="top" aria-pressed="false">
         Top
     </button>
 
@@ -73,12 +79,17 @@
             aria-label="Create a post">
             <span aria-hidden="true">+</span>
         </button>
-
+        
+        <p class="support-note">
+            Need urgent help? South Africa: SADAG 0800 21 22 23 &middot;
+            Suicide Crisis Line 0800 567 567 &middot; Lifeline 0861 322 322
+        </p>
         <button type="button" id="logoutButton" class="logout-button">
          Logout
         </button>
 
     </main>
+
         <script src="../js/posts.js"></script>
         <script src="../js/auth.js"></script>
         <script src="../js/theme.js"></script>

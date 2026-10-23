@@ -1,5 +1,6 @@
-
 document.addEventListener("DOMContentLoaded", () => {
+    const API_BASE = "http://127.0.0.1:8080/api";
+
     const profileForm = document.getElementById("profileForm");
     const usernameInput = document.getElementById("username");
     const bioInput = document.getElementById("bio");
@@ -8,31 +9,77 @@ document.addEventListener("DOMContentLoaded", () => {
     const activityList = document.getElementById("activityList");
 
     let activeTab = "posts";
+    let currentProfile = null;
 
-    function readStorage(key, fallback = []) {
-        try {
-            const value = JSON.parse(localStorage.getItem(key) || "null");
-            return value ?? fallback;
-        } catch {
-            return fallback;
+    // Send a request to the backend and return its JSON reply.
+    async function requestJson(url, options = {}) {
+        const response = await fetch(url, {
+            credentials: "include",
+            ...options,
+            headers: {
+                "Content-Type": "application/json",
+                ...(options.headers || {})
+            }
+        });
+
+        if (response.status === 401) {
+            window.location.href = "login.html";
+            throw new Error("Please log in to continue.");
         }
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(
+                data.message || "Something went wrong. Please try again."
+            );
+        }
+
+        return data;
     }
 
-    function getPosts() {
-        const posts = readStorage("mindspacePosts", []);
-        return Array.isArray(posts) ? posts : [];
+    // Convert a date sent by the backend into a readable date and time.
+    function formatDate(value) {
+        if (!value) return "";
+
+        let date;
+
+        if (Array.isArray(value)) {
+            const [year, month, day, hour = 0, minute = 0, second = 0] = value;
+            date = new Date(year, month - 1, day, hour, minute, second);
+        } else {
+            date = new Date(String(value).replace(/(\.\d{3})\d+/, "$1"));
+        }
+
+        if (Number.isNaN(date.getTime())) return "";
+
+        return date.toLocaleString("en-ZA", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
     }
 
-    function getBookmarks() {
-        const bookmarks = readStorage("mindspaceBookmarks", []);
-        return Array.isArray(bookmarks) ? bookmarks.map(String) : [];
+    // Show only the four numbers at the top of the page.
+    function showStats(profile) {
+        document.getElementById("postCount").textContent =
+            profile.postCount ?? 0;
+        document.getElementById("commentCount").textContent =
+            profile.commentCount ?? 0;
+        document.getElementById("likeCount").textContent =
+            profile.likedCount ?? 0;
+        document.getElementById("bookmarkCount").textContent =
+            profile.bookmarkCount ?? 0;
     }
 
-    function loadProfile() {
-        const profile = readStorage("mindspaceProfile", {});
+    // Show the profile details and fill in the edit form.
+    function showProfile(profile) {
+        currentProfile = profile;
 
         document.getElementById("displayUsername").textContent =
-            profile.username || "Choose your username";
+            profile.username || "Your username";
         document.getElementById("displayBio").textContent =
             profile.bio || "Tell the community about yourself.";
         document.getElementById("displayInterests").textContent =
@@ -41,38 +88,93 @@ document.addEventListener("DOMContentLoaded", () => {
         usernameInput.value = profile.username || "";
         bioInput.value = profile.bio || "";
         interestsInput.value = profile.interests || "";
+
+        showStats(profile);
     }
 
-    document.getElementById("editProfileButton").addEventListener("click", () => {
-        profileMessage.textContent = "";
-        profileForm.hidden = false;
-        usernameInput.focus();
-    });
+    async function loadProfile() {
+        try {
+            showProfile(await requestJson(`${API_BASE}/profile`));
+        } catch (error) {
+            console.error("Could not load profile:", error);
+            profileMessage.textContent =
+                "Could not load your profile. Please check that the backend is running.";
+        }
+    }
 
-    document.getElementById("cancelEditButton").addEventListener("click", () => {
-        loadProfile();
-        profileForm.hidden = true;
-        profileMessage.textContent = "";
-    });
+    // Refresh the four numbers without touching the edit form.
+    async function refreshStats() {
+        try {
+            showStats(await requestJson(`${API_BASE}/profile`));
+        } catch (error) {
+            console.error("Could not refresh stats:", error);
+        }
+    }
 
-    profileForm.addEventListener("submit", event => {
+    document
+        .getElementById("editProfileButton")
+        .addEventListener("click", () => {
+            profileMessage.textContent = "";
+            profileForm.hidden = false;
+            usernameInput.focus();
+        });
+
+    document
+        .getElementById("cancelEditButton")
+        .addEventListener("click", () => {
+            if (currentProfile) {
+                showProfile(currentProfile);
+            }
+
+            profileForm.hidden = true;
+            profileMessage.textContent = "";
+        });
+
+    profileForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const profile = {
-            username: usernameInput.value.trim(),
-            bio: bioInput.value.trim(),
-            interests: interestsInput.value.trim()
-        };
+        const username = usernameInput.value.trim();
+        const bio = bioInput.value.trim();
+        const interests = interestsInput.value.trim();
+        const saveButton = profileForm.querySelector('button[type="submit"]');
 
-        if (!profile.username) {
-            profileMessage.textContent = "Please enter a username.";
+        if (username.length < 3 || username.length > 30) {
+            profileMessage.textContent =
+                "Username must be between 3 and 30 characters.";
             return;
         }
 
-        localStorage.setItem("mindspaceProfile", JSON.stringify(profile));
-        loadProfile();
-        profileMessage.textContent = "Profile updated successfully!";
-        profileForm.hidden = true;
+        if (bio.length > 250) {
+            profileMessage.textContent =
+                "Your bio cannot exceed 250 characters.";
+            return;
+        }
+
+        if (interests.length > 200) {
+            profileMessage.textContent =
+                "Your interests cannot exceed 200 characters.";
+            return;
+        }
+
+        saveButton.disabled = true;
+        profileMessage.textContent = "";
+
+        try {
+            const updatedProfile = await requestJson(`${API_BASE}/profile`, {
+                method: "PUT",
+                body: JSON.stringify({ username, bio, interests })
+            });
+
+            showProfile(updatedProfile);
+            profileMessage.textContent = "Profile updated successfully!";
+            profileForm.hidden = true;
+        } catch (error) {
+            console.error("Could not update profile:", error);
+            profileMessage.textContent =
+                error.message || "Could not update your profile.";
+        } finally {
+            saveButton.disabled = false;
+        }
     });
 
     function createButton(label, action, className = "") {
@@ -84,51 +186,44 @@ document.addEventListener("DOMContentLoaded", () => {
         return button;
     }
 
-    function deletePost(postId) {
-        if (!confirm("Delete this post permanently? Its comments will also be deleted.")) {
-            return;
+    // Ask for confirmation, send the request, then refresh the page data.
+    async function runAction(confirmMessage, url, options) {
+        if (!window.confirm(confirmMessage)) return;
+
+        try {
+            await requestJson(url, options);
+            await refreshStats();
+            await renderActivity();
+        } catch (error) {
+            console.error("Could not complete the action:", error);
+            window.alert(
+                error.message || "Something went wrong. Please try again."
+            );
         }
-
-        const posts = getPosts();
-        const updatedPosts = posts.filter(post => String(post.id) !== String(postId));
-
-        localStorage.setItem("mindspacePosts", JSON.stringify(updatedPosts));
-
-        const bookmarks = getBookmarks().filter(id => id !== String(postId));
-        localStorage.setItem("mindspaceBookmarks", JSON.stringify(bookmarks));
-
-        renderActivity();
     }
 
-    function deleteComment(postId, commentIndex) {
-        if (!confirm("Delete this comment?")) return;
+    function deletePost(postId) {
+        return runAction(
+            "Delete this post permanently? Its comments will also be deleted.",
+            `${API_BASE}/posts/${encodeURIComponent(postId)}`,
+            { method: "DELETE" }
+        );
+    }
 
-        const posts = getPosts();
-        const post = posts.find(item => String(item.id) === String(postId));
-
-        if (!post || !Array.isArray(post.comments)) return;
-
-        const comment = post.comments[commentIndex];
-
-        // Only allow deleting comments identified as yours.
-        if (
-            typeof comment === "string" ||
-            (comment && comment.author === "You")
-        ) {
-            post.comments.splice(commentIndex, 1);
-            localStorage.setItem("mindspacePosts", JSON.stringify(posts));
-            renderActivity();
-        } else {
-            alert("You can only delete your own comments.");
-        }
+    function deleteComment(commentId) {
+        return runAction(
+            "Delete this comment?",
+            `${API_BASE}/comments/${encodeURIComponent(commentId)}`,
+            { method: "DELETE" }
+        );
     }
 
     function removeBookmark(postId) {
-        if (!confirm("Remove this post from your saved posts?")) return;
-
-        const bookmarks = getBookmarks().filter(id => id !== String(postId));
-        localStorage.setItem("mindspaceBookmarks", JSON.stringify(bookmarks));
-        renderActivity();
+        return runAction(
+            "Remove this post from your saved posts?",
+            `${API_BASE}/posts/${encodeURIComponent(postId)}/bookmark`,
+            { method: "DELETE" }
+        );
     }
 
     function createActivityCard(title, content, meta, actionButton = null) {
@@ -155,75 +250,59 @@ document.addEventListener("DOMContentLoaded", () => {
         return card;
     }
 
-    function renderActivity() {
-        const posts = getPosts();
-        const bookmarks = getBookmarks();
+    function showMessage(text) {
+        const message = document.createElement("p");
+        message.className = "empty-activity";
+        message.textContent = text;
+        activityList.replaceChildren(message);
+    }
 
-        const myPosts = posts.filter(post => post.author === "You");
-        const myComments = [];
+    async function renderActivity() {
+        const tab = activeTab;
+        let data;
 
-        posts.forEach(post => {
-            if (!Array.isArray(post.comments)) return;
+        try {
+            data = await requestJson(`${API_BASE}/profile/${tab}`);
+        } catch (error) {
+            console.error("Could not load activity:", error);
 
-            post.comments.forEach((comment, index) => {
-                if (typeof comment === "string") {
-                    myComments.push({
-                        text: comment,
-                        post,
-                        postId: post.id,
-                        commentIndex: index
-                    });
-                } else if (comment && comment.author === "You") {
-                    myComments.push({
-                        text: comment.text || "",
-                        post,
-                        postId: post.id,
-                        commentIndex: index
-                    });
-                }
-            });
-        });
+            if (tab === activeTab) {
+                showMessage("Could not load this list. Please try again.");
+            }
 
-        const likedPosts = posts.filter(post => post.liked === true);
-        const savedPosts = bookmarks.map(id =>
-            posts.find(post => String(post.id) === id)
-        ).filter(Boolean);
+            return;
+        }
 
-        document.getElementById("postCount").textContent = myPosts.length;
-        document.getElementById("commentCount").textContent = myComments.length;
-        document.getElementById("likeCount").textContent = likedPosts.length;
-        document.getElementById("bookmarkCount").textContent = bookmarks.length;
+        // The person switched tabs while this list was loading.
+        if (tab !== activeTab) return;
 
-        activityList.replaceChildren();
-
+        const list = Array.isArray(data) ? data : [];
         let items = [];
 
-        if (activeTab === "posts") {
-            items = myPosts.map(post => ({
+        if (tab === "posts") {
+            items = list.map((post) => ({
                 title: post.topic || "My post",
                 content: post.content || "",
-                meta: post.createdAt
-                    ? new Date(post.createdAt).toLocaleString()
-                    : "Post history",
+                meta: formatDate(post.createdAt) || "Post history",
                 button: createButton("Delete post", () => deletePost(post.id))
             }));
-        } else if (activeTab === "comments") {
-            items = myComments.map(comment => ({
+        } else if (tab === "comments") {
+            items = list.map((comment) => ({
                 title: "My comment",
-                content: comment.text,
-                meta: "On: " + (comment.post.content || "A post"),
+                content: comment.text || "",
+                meta: "On: " + (comment.postContent || "A post"),
                 button: createButton("Delete comment", () =>
-                    deleteComment(comment.postId, comment.commentIndex)
+                    deleteComment(comment.id)
                 )
             }));
-        } else if (activeTab === "liked") {
-            items = likedPosts.map(post => ({
+        } else if (tab === "liked") {
+            items = list.map((post) => ({
                 title: post.topic || "Liked post",
                 content: post.content || "",
                 meta: "Liked by you"
             }));
-        } else if (activeTab === "saved") {
-            items = savedPosts.map(post => ({
+        } else if (tab === "saved") {
+            items = list.map((post) => ({
                 title: post.topic || "Saved post",
                 content: post.content || "",
                 meta: "Bookmarked by you",
@@ -234,38 +313,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (items.length === 0) {
-            const empty = document.createElement("p");
-            empty.className = "empty-activity";
-
             const messages = {
                 posts: "You haven't created any posts yet.",
                 comments: "Your comment history will appear here.",
-                liked: "Your liked posts will appear here when available.",
-                saved: "You have no saved posts here."
+                liked: "Posts you like will appear here.",
+                saved: "You have no saved posts yet."
             };
 
-            empty.textContent = messages[activeTab];
-            activityList.appendChild(empty);
+            showMessage(messages[tab]);
             return;
         }
 
-        items.forEach(item => {
-            activityList.appendChild(
+        activityList.replaceChildren(
+            ...items.map((item) =>
                 createActivityCard(
                     item.title,
                     item.content,
                     item.meta,
                     item.button
                 )
-            );
-        });
+            )
+        );
     }
 
-    document.querySelectorAll(".profile-tabs button").forEach(button => {
+    document.querySelectorAll(".profile-tabs button").forEach((button) => {
         button.addEventListener("click", () => {
             activeTab = button.dataset.tab;
 
-            document.querySelectorAll(".profile-tabs button").forEach(tab => {
+            document.querySelectorAll(".profile-tabs button").forEach((tab) => {
                 const selected = tab === button;
                 tab.classList.toggle("active", selected);
                 tab.setAttribute("aria-pressed", String(selected));

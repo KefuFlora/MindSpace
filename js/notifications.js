@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
     const notificationsList = document.getElementById("notificationsList");
     const notificationCount = document.getElementById("notificationCount");
@@ -7,66 +6,39 @@ document.addEventListener("DOMContentLoaded", () => {
     const clearAllButton = document.getElementById("clearAllButton");
     const pageMessage = document.getElementById("pageMessage");
 
-    const STORAGE_KEY = "mindspaceNotifications";
+    const API_BASE = "http://127.0.0.1:8080/api/notifications";
 
-    function loadNotifications() {
-        try {
-            const stored = localStorage.getItem(STORAGE_KEY);
+    let notifications = [];
 
-            if (stored === null) {
-                const examples = [
-                    {
-                        id: "demo-1",
-                        type: "reply",
-                        title: "Someone replied to your post",
-                        message: "Your community is here to listen and support you.",
-                        createdAt: new Date().toISOString(),
-                        read: false
-                    },
-                    {
-                        id: "demo-2",
-                        type: "like",
-                        title: "Your post received support",
-                        message: "Someone appreciated a post you shared.",
-                        createdAt: new Date(Date.now() - 3600000).toISOString(),
-                        read: false
-                    },
-                    {
-                        id: "demo-3",
-                        type: "moderation",
-                        title: "Community reminder",
-                        message: "Remember to be respectful and supportive of everyone in MindSpace.",
-                        createdAt: new Date(Date.now() - 86400000).toISOString(),
-                        read: true
-                    }
-                ];
-
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(examples));
-                return examples;
+    // Send a request to the backend and return its JSON reply.
+    async function requestJson(url, options = {}) {
+        const response = await fetch(url, {
+            credentials: "include",
+            ...options,
+            headers: {
+                "Content-Type": "application/json",
+                ...(options.headers || {})
             }
+        });
 
-            const parsed = JSON.parse(stored);
-            return Array.isArray(parsed) ? parsed : [];
-        } catch (error) {
-            console.error("Could not load notifications:", error);
-            pageMessage.textContent =
-                "Notifications could not be loaded. Check your browser storage.";
-            return [];
+        if (response.status === 401) {
+            window.location.href = "login.html";
+            throw new Error("Please log in to continue.");
         }
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(
+                data.message || "Something went wrong. Please try again."
+            );
+        }
+
+        return data;
     }
 
-    let notifications = loadNotifications();
-
-    function saveNotifications() {
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(notifications));
-            return true;
-        } catch (error) {
-            console.error("Could not save notifications:", error);
-            pageMessage.textContent =
-                "Your changes could not be saved in this browser.";
-            return false;
-        }
+    function showMessage(text) {
+        pageMessage.textContent = text;
     }
 
     function getIcon(type) {
@@ -93,9 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const days = Math.floor(difference / 86400000);
 
         if (minutes < 1) return "Just now";
-        if (minutes < 60) return `${minutes} minute(s) ago`;
-        if (hours < 24) return `${hours} hour(s) ago`;
-        if (days < 7) return `${days} day(s) ago`;
+        if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
+        if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+        if (days < 7) return `${days} day${days === 1 ? "" : "s"} ago`;
 
         return date.toLocaleDateString();
     }
@@ -137,6 +109,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const actions = document.createElement("div");
             actions.className = "notification-actions";
+            
+            if (item.postId) {
+                const viewLink = document.createElement("a");
+                viewLink.className = "view-post";
+                viewLink.href = `posts.html#post-${item.postId}`;
+                viewLink.textContent = "View post";
+                actions.appendChild(viewLink);
+            }
 
             if (!item.read) {
                 const readButton = document.createElement("button");
@@ -167,7 +147,24 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    notificationsList.addEventListener("click", (event) => {
+    // Load notifications saved in MySQL for the logged-in user.
+    async function loadNotifications() {
+        try {
+            const data = await requestJson(API_BASE);
+            notifications = Array.isArray(data) ? data : [];
+            showMessage("");
+        } catch (error) {
+            console.error("Could not load notifications:", error);
+            showMessage(
+                error.message ||
+                "Notifications could not be loaded. Check that the backend is running."
+            );
+        }
+
+        renderNotifications();
+    }
+
+    notificationsList.addEventListener("click", async (event) => {
         const card = event.target.closest(".notification-card");
         if (!card) return;
 
@@ -178,56 +175,108 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!notification) return;
 
-        if (event.target.closest(".mark-read")) {
-            notification.read = true;
+        const readButton = event.target.closest(".mark-read");
+        const deleteButton = event.target.closest(".delete-notification");
+                const viewLink = event.target.closest(".view-post");
 
-            if (saveNotifications()) {
-                pageMessage.textContent = "Notification marked as read.";
+        // Opening a post also marks its notification as read.
+        if (viewLink && !notification.read) {
+            event.preventDefault();
+
+            try {
+                await requestJson(
+                    `${API_BASE}/${encodeURIComponent(notificationId)}/read`,
+                    { method: "PUT" }
+                );
+            } catch (error) {
+                console.error("Could not mark notification as read:", error);
+            }
+
+            window.location.href = viewLink.href;
+            return;
+        }
+
+        if (readButton) {
+            readButton.disabled = true;
+
+            try {
+                await requestJson(
+                    `${API_BASE}/${encodeURIComponent(notificationId)}/read`,
+                    { method: "PUT" }
+                );
+
+                notification.read = true;
+                showMessage("Notification marked as read.");
                 renderNotifications();
+            } catch (error) {
+                console.error("Could not mark notification as read:", error);
+                showMessage(error.message);
+                readButton.disabled = false;
             }
         }
 
-        if (event.target.closest(".delete-notification")) {
-            notifications = notifications.filter(
-                item => String(item.id) !== notificationId
-            );
+        if (deleteButton) {
+            deleteButton.disabled = true;
 
-            if (saveNotifications()) {
-                pageMessage.textContent = "Notification deleted.";
+            try {
+                await requestJson(
+                    `${API_BASE}/${encodeURIComponent(notificationId)}`,
+                    { method: "DELETE" }
+                );
+
+                notifications = notifications.filter(
+                    item => String(item.id) !== notificationId
+                );
+                showMessage("Notification deleted.");
                 renderNotifications();
+            } catch (error) {
+                console.error("Could not delete notification:", error);
+                showMessage(error.message);
+                deleteButton.disabled = false;
             }
         }
     });
 
-    markAllReadButton.addEventListener("click", () => {
-        notifications.forEach(item => {
-            item.read = true;
-        });
+    markAllReadButton.addEventListener("click", async () => {
+        markAllReadButton.disabled = true;
 
-        if (saveNotifications()) {
-            pageMessage.textContent = "All notifications marked as read.";
-            renderNotifications();
+        try {
+            await requestJson(`${API_BASE}/read-all`, { method: "PUT" });
+
+            notifications.forEach(item => {
+                item.read = true;
+            });
+            showMessage("All notifications marked as read.");
+        } catch (error) {
+            console.error("Could not mark all as read:", error);
+            showMessage(error.message);
         }
+
+        renderNotifications();
     });
 
-    clearAllButton.addEventListener("click", () => {
+    clearAllButton.addEventListener("click", async () => {
         if (notifications.length === 0) return;
 
         if (!window.confirm("Clear all notifications? This cannot be undone.")) {
             return;
         }
 
-        const previousNotifications = notifications;
-        notifications = [];
+        clearAllButton.disabled = true;
 
-        if (saveNotifications()) {
-            pageMessage.textContent = "All notifications cleared.";
-            renderNotifications();
-        } else {
-            notifications = previousNotifications;
-            renderNotifications();
+        try {
+            await requestJson(API_BASE, { method: "DELETE" });
+
+            notifications = [];
+            showMessage("All notifications cleared.");
+        } catch (error) {
+            console.error("Could not clear notifications:", error);
+            showMessage(error.message);
         }
+
+        renderNotifications();
     });
 
     renderNotifications();
+    loadNotifications();
 });

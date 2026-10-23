@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderation | MindSpace</title>
+    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+    <main class="profile-container">
+        <a href="posts.html" class="back-link">← Back to Feed</a>
+
+        <div class="theme-toggle-container">
+            <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
+            <label for="themeToggle" class="theme-toggle-label">
+                <span class="toggle-sun">☀</span>
+                <span class="toggle-moon">☾</span>
+                <span class="toggle-knob"></span>
+            </label>
+        </div>
+
+        <header class="admin-header">
+            <h1>Moderation dashboard</h1>
+            <p>
+                Review reported posts. Removing a post hides it from the feed,
+                and you can restore it later if it was a mistake.
+            </p>
+        </header>
+
+        <nav class="profile-tabs" id="reportTabs" aria-label="Report filters">
+            <button type="button" data-filter="pending" class="active">Pending</button>
+            <button type="button" data-filter="resolved">Resolved</button>
+            <button type="button" data-filter="dismissed">Dismissed</button>
+            <button type="button" data-filter="all">All</button>
+        </nav>
+
+        <p id="adminMessage" role="status" aria-live="polite"></p>
+
+        <section id="reportList" class="activity-list" aria-live="polite"></section>
+    </main>
+
+    <script src="../js/admin.js"></script>
+    <script src="../js/theme.js"></script>
+</body>
+</html>

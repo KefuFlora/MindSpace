@@ -276,3 +276,13 @@ h1 {
         font-size: 18px;
     }
 }
+
+.notification-actions .view-post {
+    color: var(--purple-dark);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.notification-actions .view-post:hover {
+    text-decoration: underline;
+}

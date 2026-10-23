@@ -1,5 +1,5 @@
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const form = document.getElementById("createPostForm");
     const topicInput = document.getElementById("postTopic");
     const contentInput = document.getElementById("postContent");
@@ -9,23 +9,80 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeButton = document.getElementById("closeButton");
     const submitButton = form.querySelector(".submit-post-button");
     const formMessage = document.getElementById("formMessage");
+    const heading = document.querySelector(".create-post-header h1");
+
+    const API_BASE = "http://127.0.0.1:8080/api";
     const params = new URLSearchParams(window.location.search);
     const editId = params.get("editId");
+
     let postBeingEdited = null;
 
-    if (editId) {
+    function showMessage(message) {
+        formMessage.textContent = message;
+    }
+
+    async function apiRequest(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                ...options.headers
+            }
+        });
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {
+            // The response may not contain JSON.
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data.message || "Something went wrong. Please try again."
+            );
+        }
+
+        return data;
+    }
+
+    // Check that the user is logged in.
     try {
-        const savedPosts = JSON.parse(
-            localStorage.getItem("mindspacePosts") || "[]"
-        );
+        await apiRequest(`${API_BASE}/auth/me`, {
+            method: "GET",
+            headers: {}
+        });
+    } catch {
+        window.location.href = "login.html";
+        return;
+    }
 
-        postBeingEdited = Array.isArray(savedPosts)
-            ? savedPosts.find(
-                post => String(post.id) === String(editId)
-            )
-            : null;
+    // Load the post from MySQL when editing.
+    if (editId) {
+        try {
+            postBeingEdited = await apiRequest(
+                `${API_BASE}/posts`,
+                { method: "GET" }
+            ).then(posts =>
+                posts.find(post => String(post.id) === String(editId))
+            );
 
-        if (postBeingEdited) {
+            if (!postBeingEdited) {
+                showMessage(
+                    "This post could not be found. It may have been deleted."
+                );
+                submitButton.disabled = true;
+                return;
+            }
+
+            if (!postBeingEdited.isOwnPost) {
+                showMessage("You can only edit your own posts.");
+                submitButton.disabled = true;
+                return;
+            }
+
             topicInput.value = postBeingEdited.topic;
             contentInput.value = postBeingEdited.content;
 
@@ -36,19 +93,13 @@ document.addEventListener("DOMContentLoaded", () => {
             warningText.value = postBeingEdited.triggerWarning || "";
 
             submitButton.textContent = "Save Changes";
-
-            document.querySelector(".create-post-header h1").textContent =
-                "Edit Post";
-        } else {
-            formMessage.textContent =
-                "This post could not be found. You can create a new post instead.";
+            heading.textContent = "Edit Post";
+        } catch (error) {
+            showMessage(error.message);
+            submitButton.disabled = true;
+            return;
         }
-    } catch (error) {
-        console.error("Could not load post for editing:", error);
-        formMessage.textContent =
-            "The post could not be loaded for editing.";
     }
-}
 
     // Show or hide the content-warning field.
     triggerWarning.addEventListener("change", () => {
@@ -64,8 +115,8 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "posts.html";
     });
 
-    // Create and save a post.
-    form.addEventListener("submit", (event) => {
+    // Create or update a post in MySQL.
+    form.addEventListener("submit", async event => {
         event.preventDefault();
 
         const topic = topicInput.value;
@@ -73,100 +124,66 @@ document.addEventListener("DOMContentLoaded", () => {
         const hasWarning = triggerWarning.checked;
         const warning = warningText.value.trim();
 
-        formMessage.textContent = "";
+        showMessage("");
 
         if (!content) {
-            formMessage.textContent = "Please write something before posting.";
+            showMessage("Please write something before posting.");
+            contentInput.focus();
+            return;
+        }
+
+        if (content.length > 2000) {
+            showMessage("Your post cannot exceed 2000 characters.");
             contentInput.focus();
             return;
         }
 
         if (hasWarning && !warning) {
-            formMessage.textContent =
-                "Please enter a content warning or switch the option off.";
+            showMessage(
+                "Please enter a content warning or switch the option off."
+            );
             warningText.focus();
             return;
         }
 
-        // Read existing posts from browser storage.
-        let savedPosts = [];
-
-        try {
-            const storedPosts = localStorage.getItem("mindspacePosts");
-            savedPosts = storedPosts ? JSON.parse(storedPosts) : [];
-
-            if (!Array.isArray(savedPosts)) {
-                savedPosts = [];
-            }
-        } catch (error) {
-            formMessage.textContent =
-                "Your post could not be saved. Please try again.";
-            return;
-        }
-
-       
-        // Update an existing post or create a new one.
-        if (editId && !postBeingEdited) {
-            formMessage.textContent =
-                "This post could not be found. Please return to the feed and try again.";
-            return;
-        }
-
-        if (editId && postBeingEdited.author !== "You") {
-            formMessage.textContent =
-                "You can only edit your own posts.";
+        if (warning.length > 100) {
+            showMessage("The content warning cannot exceed 100 characters.");
+            warningText.focus();
             return;
         }
 
         const postData = {
-            id: editId || Date.now().toString(),
-            author: editId ? postBeingEdited.author : "You",
-            topic: topic,
-            content: content,
-            createdAt: editId
-                ? postBeingEdited.createdAt
-                : new Date().toISOString(),
+            topic,
+            content,
             hasTriggerWarning: hasWarning,
-            triggerWarning: hasWarning ? warning : "",
-            likes: editId ? (postBeingEdited.likes || 0) : 0,
-            comments: editId ? (postBeingEdited.comments || []) : [],
-            bookmarked: editId
-                ? (postBeingEdited.bookmarked || false)
-                : false
+            triggerWarning: hasWarning ? warning : ""
         };
 
-        if (editId) {
-            const postIndex = savedPosts.findIndex(
-                post => String(post.id) === String(editId)
-            );
-
-            if (postIndex === -1) {
-                formMessage.textContent =
-                    "This post could not be found. Please return to the feed and try again.";
-                return;
-            }
-
-            savedPosts[postIndex] = postData;
-        } else {
-            savedPosts.unshift(postData);
-        }
-
-        // Save before navigating back to the feed.
-        try {
-            localStorage.setItem(
-                "mindspacePosts",
-                JSON.stringify(savedPosts)
-            );
-        } catch (error) {
-            formMessage.textContent =
-                "Your post could not be saved in this browser.";
-            return;
-        }
-
         submitButton.disabled = true;
-        submitButton.textContent = editId ? "Changes Saved!" : "Post Created!";
+        submitButton.textContent = editId ? "Saving..." : "Posting...";
 
-        window.location.href = "posts.html";
+        try {
+            await apiRequest(
+                editId
+                    ? `${API_BASE}/posts/${encodeURIComponent(editId)}`
+                    : `${API_BASE}/posts`,
+                {
+                    method: editId ? "PUT" : "POST",
+                    body: JSON.stringify(postData)
+                }
+            );
 
+            submitButton.textContent = editId
+                ? "Changes Saved!"
+                : "Post Created!";
+
+            window.location.href = "posts.html";
+        } catch (error) {
+            showMessage(error.message);
+            submitButton.disabled = false;
+            submitButton.textContent = editId
+                ? "Save Changes"
+                : "Post Anonymously";
+        }
     });
 });
